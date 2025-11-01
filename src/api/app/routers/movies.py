@@ -1,17 +1,16 @@
 from fastapi import APIRouter
-from fastapi.responses import JSONResponse
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/movies",
+    tags=["movies"]
+)
 
-# Example Movie Data
-movies = [
-    {"id": 1, "title": "Inception", "description": "A thief who steals corporate secrets through the use of dream-sharing technology.", "year": 2010},
-    {"id": 2, "title": "The Matrix", "description": "A computer hacker learns about the true nature of his reality and his role in the war against its controllers.", "year": 1999},
-]
+# TODO: Implement movie routes
+# @router.get("/", response_model=List[MovieList])
+# @router.post("/", response_model=MovieResponse)
+# @router.get("/search", response_model=List[MovieList])
+# @router.get("/{movie_id}", response_model=MovieResponse)
+# @router.put("/{movie_id}", response_model=MovieResponse)
+# @router.delete("/{movie_id}")
+# @router.get("/recommendations/{user_id}", response_model=List[MovieList])
 
-
-@router.get("/movies", tags=["Movies"])
-async def get_movies():
-    if not movies:
-        return JSONResponse(content={"message": "No movies found."}, status_code=404)
-    return JSONResponse(content=movies, status_code=200)
