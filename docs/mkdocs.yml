@@ -1,0 +1,74 @@
+site_name: Movie Recommendation Platform Documentation
+site_description: Documentation for the Movie Recommendation Platform project
+site_url: https://your-domain.com/docs
+site_author: ADS Project Team
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.arithmatex:
+      generic: true
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.mark
+  - attr_list
+  - md_in_html
+
+nav:
+  - Home: index.md
+  - Documentation:
+    - Project Overview: ../PROJECT_OVERVIEW.md
+    - Quick Reference: ../QUICK_REFERENCE.md
+    - Implementation Examples: ../IMPLEMENTATION_EXAMPLES.md
+    - Setup Guide: ../SETUP_COMPLETE.md
+  - Architecture:
+    - System Context: ARCH/SystemContextDiagramC4.drawio
+    - Container Diagram: ARCH/ContainerDiagramC4.drawio
+  - Entity Relationship:
+    - Conceptual Diagram (AI): ER/Conceptual_Diagram_AI.json
+    - Conceptual Diagram (Manual): ER/Conceptual_Diagram_manual.json
+  - API Documentation:
+    - API SDK (Python): api/index.html
+  - Frontend Documentation:
+    - React SDK (TypeScript): frontend/index.html
+
+plugins:
+  - search
+  - mkdocstrings
+
+extra:
+  social:
+    - icon: fontawesome/brands/gitlab
+      link: https://gitlab.com/botassimao/ads-projeto
+    - icon: fontawesome/solid/globe
+      link: https://your-domain.com
+
+copyright: Copyright &copy; 2025 ADS Project Team

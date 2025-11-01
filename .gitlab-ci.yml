@@ -9,11 +9,11 @@ workflow:
     
 
 stages:
-  # - build
+  - build
   - documentation
   - deploy
 
 include:
   # - local: '/ci/unit_test.yml'
-  # - local: '/ci/build.yml'
+  - local: '/ci/build.yml'
   - local: '/ci/documentation.yml'
