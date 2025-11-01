@@ -36,7 +36,7 @@ generate_mkdocs_documentation:
     - pip install mkdocs mkdocs-material mkdocstrings pymdown-extensions
   script:
     - echo "Generating MkDocs documentation"
-    - cd ./docs && mkdocs build --site-dir ../public
+    - cd ./docs && mkdocs build
   artifacts:
     paths:
       - public/

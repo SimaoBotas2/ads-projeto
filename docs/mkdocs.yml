@@ -3,6 +3,10 @@ site_description: Documentation for the Movie Recommendation Platform project
 site_url: https://your-domain.com/docs
 site_author: ADS Project Team
 
+# Configure the docs directory
+docs_dir: .
+site_dir: ../public
+
 theme:
   name: material
   palette:
