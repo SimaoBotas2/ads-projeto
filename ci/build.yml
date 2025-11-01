@@ -21,6 +21,6 @@ build:
     - buildah push $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest docker-archive:${IMAGE_NAME}-image.tar
   artifacts:
     paths:
-      - ${IMAGE_NAME}-image.tar
+      - "*-image.tar"
     expire_in: 1 week
 
