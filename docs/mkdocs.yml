@@ -4,7 +4,7 @@ site_url: https://your-domain.com/docs
 site_author: ADS Project Team
 
 # Configure the docs directory
-docs_dir: .
+docs_dir: content
 site_dir: ../public
 
 theme:
@@ -49,10 +49,10 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Documentation:
-    - Project Overview: ../PROJECT_OVERVIEW.md
-    - Quick Reference: ../QUICK_REFERENCE.md
-    - Implementation Examples: ../IMPLEMENTATION_EXAMPLES.md
-    - Setup Guide: ../SETUP_COMPLETE.md
+    - Project Overview: PROJECT_OVERVIEW.md
+    - Quick Reference: QUICK_REFERENCE.md
+    - Implementation Examples: IMPLEMENTATION_EXAMPLES.md
+    - Setup Guide: SETUP_COMPLETE.md
   - Architecture:
     - System Context: ARCH/SystemContextDiagramC4.drawio
     - Container Diagram: ARCH/ContainerDiagramC4.drawio
