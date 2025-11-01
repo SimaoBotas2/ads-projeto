@@ -15,12 +15,59 @@ generate_python_documentation_api:
     paths:
       - public/
 
+generate_react_documentation_frontend:
+  stage: documentation
+  image: node:20
+  before_script:
+    - npm install -g docusaurus
+  script:
+    - echo "Generating React documentation for Frontend"
+    - docusaurus build ./src/frontend/docs
+  artifacts:
+    paths:
+      - ./src/frontend/docs/build
+
 pages:
   stage: deploy
   dependencies:
     - generate_python_documentation_api
+    - generate_react_documentation_frontend
   script:
     - echo "Deploying documentation to GitLab Pages"
+    - mkdir -p public
+    - cp -r public/* public/api/ 2>/dev/null || mv public public_temp && mkdir -p public && mv public_temp public/api
+    - cp -r ./src/frontend/docs/build/* public/frontend/ || echo "Frontend docs not found"
+    - |
+      cat > public/index.html << 'EOF'
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Documentation Portal</title>
+        <style>
+          body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+          h1 { color: #333; }
+          .card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; }
+          .card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+          a { text-decoration: none; color: #0066cc; font-size: 18px; }
+          a:hover { text-decoration: underline; }
+          p { color: #666; }
+        </style>
+      </head>
+      <body>
+        <h1>📚 Documentation Portal</h1>
+        <div class="card">
+          <h2><a href="api/">🐍 API Documentation (Python)</a></h2>
+          <p>FastAPI backend documentation generated with pdoc</p>
+        </div>
+        <div class="card">
+          <h2><a href="frontend/">⚛️ Frontend Documentation (React)</a></h2>
+          <p>React frontend documentation generated with Docusaurus</p>
+        </div>
+      </body>
+      </html>
+      EOF
   artifacts:
     paths:
       - public/
