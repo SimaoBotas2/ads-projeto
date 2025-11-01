@@ -11,6 +11,7 @@ workflow:
 stages:
   # - build
   - documentation
+  - deploy
 
 include:
   # - local: '/ci/unit_test.yml'

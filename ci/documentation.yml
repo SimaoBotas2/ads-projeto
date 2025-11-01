@@ -9,8 +9,18 @@ generate_python_documentation_api:
     - pip install pdoc
   script:
     - echo "Generating Python documentation for API"
-    - mkdir -p docs
-    - pdoc --output-dir docs ./src/api/app
+    - mkdir -p public
+    - pdoc --output-dir public ./src/api/app
   artifacts:
     paths:
-      - docs/
+      - public/
+
+pages:
+  stage: deploy
+  dependencies:
+    - generate_python_documentation_api
+  script:
+    - echo "Deploying documentation to GitLab Pages"
+  artifacts:
+    paths:
+      - public/
