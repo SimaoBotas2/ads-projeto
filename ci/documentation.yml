@@ -9,8 +9,8 @@ generate_python_documentation_api:
     - pip install pdoc
   script:
     - echo "Generating Python documentation for API"
-    - mkdir -p public
-    - pdoc --output-dir public ./src/api/app
+    - mkdir -p public/api
+    - pdoc --output-dir public/api ./src/api/app
   artifacts:
     paths:
       - public/
@@ -19,13 +19,14 @@ generate_react_documentation_frontend:
   stage: documentation
   image: node:20
   before_script:
-    - npm install -g docusaurus
+    - npm install --prefix ./src/web
+    - npm install --prefix ./src/web --save-dev typedoc
   script:
     - echo "Generating React documentation for Frontend"
-    - docusaurus build ./src/frontend/docs
+    - npx --prefix ./src/web typedoc --out ./public/frontend ./src/web/src
   artifacts:
     paths:
-      - ./src/frontend/docs/build
+      - public/
 
 pages:
   stage: deploy
@@ -34,9 +35,6 @@ pages:
     - generate_react_documentation_frontend
   script:
     - echo "Deploying documentation to GitLab Pages"
-    - mkdir -p public
-    - cp -r public/* public/api/ 2>/dev/null || mv public public_temp && mkdir -p public && mv public_temp public/api
-    - cp -r ./src/frontend/docs/build/* public/frontend/ || echo "Frontend docs not found"
     - |
       cat > public/index.html << 'EOF'
       <!DOCTYPE html>
