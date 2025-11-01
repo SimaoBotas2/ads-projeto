@@ -33,7 +33,7 @@ generate_mkdocs_documentation:
   image: python:3.13
   before_script:
     - pip install --upgrade pip
-    - pip install mkdocs mkdocs-material mkdocstrings pymdown-extensions
+    - pip install mkdocs mkdocs-material mkdocstrings pymdown-extensions mkdocs-mermaid2-plugin
   script:
     - echo "Generating MkDocs documentation"
     - cd ./docs && mkdocs build
@@ -54,4 +54,3 @@ pages:
   artifacts:
     paths:
       - public/
-      

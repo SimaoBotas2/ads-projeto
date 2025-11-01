@@ -41,7 +41,11 @@ markdown_extensions:
       generic: true
   - footnotes
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.mark
   - attr_list
   - md_in_html
@@ -57,6 +61,7 @@ nav:
     - System Context: ARCH/SystemContextDiagramC4.drawio
     - Container Diagram: ARCH/ContainerDiagramC4.drawio
   - Entity Relationship:
+    - Conceptual Diagram: ER/conceptual_diagram.md
     - Conceptual Diagram (AI): ER/Conceptual_Diagram_AI.json
     - Conceptual Diagram (Manual): ER/Conceptual_Diagram_manual.json
   - API Documentation:
@@ -67,6 +72,7 @@ nav:
 plugins:
   - search
   - mkdocstrings
+  - mermaid2
 
 extra:
   social:
@@ -74,5 +80,11 @@ extra:
       link: https://gitlab.com/botassimao/ads-projeto
     - icon: fontawesome/solid/globe
       link: https://your-domain.com
+
+extra_javascript:
+  - https://unpkg.com/mermaid/dist/mermaid.min.js
+
+extra_css:
+  - https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.css
 
 copyright: Copyright &copy; 2025 ADS Project Team
