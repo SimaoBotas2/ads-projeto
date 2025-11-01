@@ -58,12 +58,9 @@ nav:
     - Implementation Examples: IMPLEMENTATION_EXAMPLES.md
     - Setup Guide: SETUP_COMPLETE.md
   - Architecture:
-    - System Context: ARCH/SystemContextDiagramC4.drawio
-    - Container Diagram: ARCH/ContainerDiagramC4.drawio
+    - Architecture Diagrams: ARCH/architecture_diagrams.md
   - Entity Relationship:
     - Conceptual Diagram: ER/conceptual_diagram.md
-    - Conceptual Diagram (AI): ER/Conceptual_Diagram_AI.json
-    - Conceptual Diagram (Manual): ER/Conceptual_Diagram_manual.json
   - API Documentation:
     - API SDK (Python): api/index.html
   - Frontend Documentation:
