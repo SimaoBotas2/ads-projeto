@@ -1,7 +1,7 @@
 generate_python_documentation_api:
   stage: documentation
   image: python:3.13
-  environment:
+  variables:
     DOCS_MODE: "1"
   before_script:
     - pip install --upgrade pip
