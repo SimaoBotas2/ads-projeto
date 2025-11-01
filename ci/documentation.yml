@@ -3,8 +3,10 @@ generate_python_documentation_api:
   image: python:3.13
   before_script:
     - pip install --upgrade pip
+    - pip install -r ./src/api/requirements.txt
     - pip install pdoc
   script:
+    - echo "Generating Python documentation for API"
     - mkdir -p docs
     - pdoc --output-dir docs ./src/api/app
   artifacts:
