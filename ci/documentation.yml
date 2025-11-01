@@ -1,4 +1,4 @@
-generate_pdoc_documentation:
+generate_python_documentation_api:
   stage: documentation
   image: python:3.13
   before_script:
@@ -6,7 +6,7 @@ generate_pdoc_documentation:
     - pip install pdoc
   script:
     - mkdir -p docs
-    - pdoc --format html --output-dir docs ./src/api/app
+    - pdoc --output-dir docs ./src/api/app
   artifacts:
     paths:
       - docs/
