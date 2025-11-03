@@ -1,3 +1,4 @@
+import hashlib, os
 from sqlalchemy.orm import Session
 from ..repositories.user_repository import UserRepository
 from ..schemas.user import UserCreate, UserUpdate
@@ -8,27 +9,32 @@ class UserService:
     def __init__(self, db: Session):
         self.repo = UserRepository(db)
 
-    # No password hashing
     def hash_password(self, password: str) -> str:
-        return password
+        salt = os.urandom(16)  # 16-byte random salt
+        salt_hex = salt.hex()
+        hash_hex = hashlib.sha256(salt + password.encode()).hexdigest()
+        return f"{salt_hex}:{hash_hex}"
 
-    def verify_password(self, plain_password: str, stored_password: str) -> bool:
-        return plain_password == stored_password
+    def verify_password(self, plain_password: str, stored: str) -> bool:
+        salt_hex, hash_hex = stored.split(":")
+        salt = bytes.fromhex(salt_hex)
+        calc = hashlib.sha256(salt + plain_password.encode()).hexdigest()
+        return calc == hash_hex
 
     def create_user(self, user_create: UserCreate) -> User:
-        # store password as-is
-        return self.repo.create(user_create, user_create.password)
+        hashed = self.hash_password(user_create.password)
+        return self.repo.create(user_create, hashed)
+
+    def update_user(self, user: User, updates: UserUpdate) -> User:
+        if updates.password:
+            updates.password = self.hash_password(updates.password)
+        return self.repo.update(user, updates)
 
     def get_user_by_id(self, user_id: int) -> Optional[User]:
         return self.repo.get_by_id(user_id)
 
     def get_user_by_username(self, username: str) -> Optional[User]:
         return self.repo.get_by_username(username)
-
-    def update_user(self, user: User, updates: UserUpdate) -> User:
-        if updates.password:
-            updates.password = updates.password  # no hashing
-        return self.repo.update(user, updates)
 
     def delete_user(self, user: User) -> None:
         self.repo.delete(user)
