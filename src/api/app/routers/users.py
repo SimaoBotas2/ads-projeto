@@ -42,15 +42,12 @@ def get_user_profile(user_id: int, service: UserService = Depends(get_user_servi
     return user
 
 
-# Update user
 @users_router.put("/{user_id}", response_model=UserResponse)
 def update_user(user_id: int, updates: UserUpdate, service: UserService = Depends(get_user_service)):
     user = service.get_user_by_id(user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    if updates.username and service.get_user_by_username(updates.username):
-        raise HTTPException(status_code=400, detail="Username already exists")
     if updates.email and service.repo.get_by_email(updates.email):
         raise HTTPException(status_code=400, detail="Email already exists")
     
