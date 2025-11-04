@@ -1,1 +1,27 @@
 @import "tailwindcss";
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+  }
+
+  :root {
+    --color-background-primary: #121212;
+    --color-background-secondary: #1e1e1e;
+    --color-text-primary: #f5f5f5;
+    --color-text-secondary: #bbbbbb;
+    --color-accent-purple: #bb86fc;
+    --color-accent-teal: #03dac6;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
