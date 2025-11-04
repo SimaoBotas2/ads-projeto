@@ -18,10 +18,31 @@
   }
 }
 
+::selection {
+  background-color: #5f2e9b85;
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.group-hover\:animate-gradient-flow {
+  animation: gradient-flow 10s ease infinite;
+  background-size: 200% 200%;
 }

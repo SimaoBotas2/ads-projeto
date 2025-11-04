@@ -1,70 +1,48 @@
-import logo from "../assets/logo.svg";
-import { User, ArrowDownIcon } from "lucide-react";
+import { User, Film } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   return (
-    <header className="bg-[#1E1E1E] text-[#F5F5F5] p-4 flex justify-between items-center min-h-[64px] min-w-full">
+    <header className="bg-[#1E1E1E] text-[#F5F5F5] p-4 flex justify-between items-center min-h-16 min-w-full">
       <div>
-        <a href="/">
-          <img src={logo} alt="Logo" className="w-12" />
-        </a>
+        <Link to="/">
+          <Film className="text-[#03DAC6] h-10 w-10" />
+        </Link>
       </div>
 
-      <div>
-        <nav>
-          <ul className="flex space-x-6">
-            <li>
-              <a
-                href="#Genre"
-                className="text-[#F5F5F5] hover:text-[#03DAC6]
-                  transition-colors duration-300 ease-out font-bold
-                "
-              >
-                Genre <ArrowDownIcon className="inline h-4 w-4" />
-              </a>
-            </li>
-            <li>
-              <a
-                href="#Browse"
-                className="text-[#F5F5F5] hover:text-[#03DAC6]
-                  transition-colors duration-300 ease-out font-bold
-                "
-              >
-                Browse
-              </a>
-            </li>
-            <li>
-              <a
-                href="#Wishlist"
-                className="text-[#F5F5F5] hover:text-[#03DAC6]
-                  transition-colors duration-300 ease-out font-bold
-                "
-              >
-                Wishlist
-              </a>
-            </li>
-            <li>
-              <a
-                href="#Ratings"
-                className="text-[#F5F5F5] hover:text-[#03DAC6]
-                  transition-colors duration-300 ease-out font-bold
-                "
-              >
-                Ratings
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+      <nav>
+        <ul className="flex space-x-6">
+          <li>
+            <Link
+              to="/browse"
+              className="text-[#F5F5F5] hover:text-[#03DAC6] transition-colors duration-300 ease-out font-bold"
+            >
+              Browse
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/wishlist"
+              className="text-[#F5F5F5] hover:text-[#03DAC6] transition-colors duration-300 ease-out font-bold"
+            >
+              Wishlist
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/ratings"
+              className="text-[#F5F5F5] hover:text-[#03DAC6] transition-colors duration-300 ease-out font-bold"
+            >
+              Ratings
+            </Link>
+          </li>
+        </ul>
+      </nav>
 
       <div>
-        <a href="">
-          <User
-            className="text-[#03DAC6] h-10 w-8 
-              hover:text-[#00756ad2] transition-colors duration-300 ease-out
-            "
-          />
-        </a>
+        <Link to="/profile">
+          <User className="text-[#03DAC6] h-10 w-8 hover:text-[#00756ad2] transition-colors duration-300 ease-out" />
+        </Link>
       </div>
     </header>
   );
