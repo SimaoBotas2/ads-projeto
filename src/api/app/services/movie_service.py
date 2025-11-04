@@ -17,8 +17,8 @@ class MovieService:
     
     def get_movies(self, skip: int = 0, limit: int = 100) -> List[MovieList]:
         """Get all movies (list view)"""
-        # TODO: Implement
-        pass
+        movies = self.repository.get_all(skip=skip, limit=limit)
+        return [MovieList.model_validate(movie) for movie in movies]
     
     def search_movies(self, query: str) -> List[MovieList]:
         """Search movies"""

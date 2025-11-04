@@ -17,8 +17,7 @@ class MovieRepository:
     
     def get_all(self, skip: int = 0, limit: int = 100) -> List[Movie]:
         """Get all movies with pagination"""
-        # TODO: Implement
-        pass
+        return self.db.query(Movie).offset(skip).limit(limit).all()
     
     def search(self, query: str) -> List[Movie]:
         """Search movies by title"""
