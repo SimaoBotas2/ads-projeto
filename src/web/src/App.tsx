@@ -1,7 +1,9 @@
+import AppRoutes from "./routes/AppRoutes";
+
 function App() {
   return (
-    <div className="bg-zinc-700 min-h-screen min-w-full p-4">
-      <h1 className="text-3xl font-bold text-zinc-200">Hello world!</h1>
+    <div className="bg-[#121212] min-h-screen min-w-full text-[#F5F5F5]">
+      <AppRoutes />
     </div>
   );
 }
