@@ -1,25 +1,28 @@
 static_analysis_api_pylint:
   stage: static_analysis
-  script:
-    - pip install flake8 pylint
-    - cd src/api
-    - pylint --exit-zero $(find . -name "*.py")
-  allow_failure: true
+  script: |
+    pip install pylint
+    cd src/api
+    pip install -r requirements.txt
+    pylint $(find . -name "*.py") | tee pylint-report.txt
   artifacts:
     when: always
     paths:
-      - src/api/.pylint.d/
+      - src/api/pylint-report.txt
     expire_in: 1 week
+  allow_failure: true
+  # artifacts removidos pois pylint não gera arquivos por padrão
 
 static_analysis_web_prettier:
+  image: node:20
   stage: static_analysis
   script:
     - npm install -g prettier
     - cd src/web
-    - prettier --check "**/*.{js,jsx,ts,tsx,css,scss,html,json,md}"
+    - prettier --check "**/*.{js,jsx,ts,tsx,css,scss,html,json,md}" | tee prettier-report.txt
   allow_failure: true
   artifacts:
     when: always
     paths:
-      - src/web/.prettier.d/
+      - src/web/prettier-report.txt
     expire_in: 1 week
