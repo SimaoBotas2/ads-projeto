@@ -1,27 +1,25 @@
-static_analysis:
+static_analysis_api_pylint:
   stage: static_analysis
-  
-  jobs:
-    static_analysis_api_pylint:
-      script:
-        - pip install flake8 pylint
-        - cd src/api
-        - pylint --exit-zero $(find . -name "*.py")
-      allow_failure: true
-      artifacts:
-        when: always
-        paths:
-          - src/api/.pylint.d/
-        expire_in: 1 week
-    
-    static_analysis_web_prettier:
-      script:
-        - npm install -g prettier
-        - cd src/web
-        - prettier --check "**/*.{js,jsx,ts,tsx,css,scss,html,json,md}"
-      allow_failure: true
-      artifacts:
-        when: always
-        paths:
-          - src/web/.prettier.d/
-        expire_in: 1 week
+  script:
+    - pip install flake8 pylint
+    - cd src/api
+    - pylint --exit-zero $(find . -name "*.py")
+  allow_failure: true
+  artifacts:
+    when: always
+    paths:
+      - src/api/.pylint.d/
+    expire_in: 1 week
+
+static_analysis_web_prettier:
+  stage: static_analysis
+  script:
+    - npm install -g prettier
+    - cd src/web
+    - prettier --check "**/*.{js,jsx,ts,tsx,css,scss,html,json,md}"
+  allow_failure: true
+  artifacts:
+    when: always
+    paths:
+      - src/web/.prettier.d/
+    expire_in: 1 week
