@@ -29,8 +29,8 @@ class MovieService:
 
     def get_movies_by_genre(self, genre_id: int) -> List[MovieList]:
         """Get movies by genre"""
-        # TODO: Implement
-        pass
+        movies = self.repository.get_by_genre(genre_id)
+        return [MovieList.model_validate(movie) for movie in movies]
     
     def get_recommended_movies(self, user_id: int, limit: int = 10) -> List[MovieList]:
         """Get recommended movies for user"""

@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from ..models.movie import Movie
 from ..schemas.movie import MovieCreate, MovieUpdate
+from ..models.genre import Genre
 
 
 class MovieRepository:
@@ -24,8 +25,7 @@ class MovieRepository:
     
     def get_by_genre(self, genre_id: int) -> List[Movie]:
         """Get movies by genre"""
-        # TODO: Implement
-        pass
+        return self.db.query(Movie).join(Movie.genres).filter(Genre.id == genre_id).all()
     
     def create(self, movie: MovieCreate) -> Movie:
         """Create a new movie"""
