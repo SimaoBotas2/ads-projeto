@@ -12,8 +12,7 @@ class MovieRepository:
     
     def get_by_id(self, movie_id: int) -> Optional[Movie]:
         """Get movie by ID"""
-        # TODO: Implement
-        pass
+        return self.db.query(Movie).filter(Movie.id == movie_id).first()
     
     def get_all(self, skip: int = 0, limit: int = 100) -> List[Movie]:
         """Get all movies with pagination"""

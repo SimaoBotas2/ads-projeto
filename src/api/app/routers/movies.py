@@ -10,6 +10,12 @@ router = APIRouter(
     tags=["movies"]
 )
 
+# get movie by id
+@router.get("/{movie_id}", response_model=MovieList)
+def get_movie(movie_id: int, db: Session = Depends(get_db)):
+    service = MovieService(db)
+    return service.get_movie(movie_id)
+
 # get all movies
 @router.get("/", response_model=List[MovieList])
 def get_movies(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
