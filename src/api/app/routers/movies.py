@@ -22,3 +22,9 @@ def get_movies(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     service = MovieService(db)
     return service.get_movies(skip=skip, limit=limit)
 
+# search movies by title or keyword
+@router.get("/search/", response_model=List[MovieList])
+def search_movies(query: str, db: Session = Depends(get_db)):
+    service = MovieService(db)
+    return service.search_movies(query)
+

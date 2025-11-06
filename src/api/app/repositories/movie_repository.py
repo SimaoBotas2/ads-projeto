@@ -19,9 +19,8 @@ class MovieRepository:
         return self.db.query(Movie).offset(skip).limit(limit).all()
     
     def search(self, query: str) -> List[Movie]:
-        """Search movies by title"""
-        # TODO: Implement
-        pass
+        """Search movies by title or keyword"""
+        return self.db.query(Movie).filter(Movie.title.ilike(f"%{query}%")).all()
     
     def get_by_genre(self, genre_id: int) -> List[Movie]:
         """Get movies by genre"""
