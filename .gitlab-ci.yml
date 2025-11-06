@@ -9,6 +9,7 @@ workflow:
     
 
 stages:
+  - static_analysis
   - unit_test
   # - build
   - documentation
