@@ -1,0 +1,22 @@
+default:
+  image: python:3.13
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    # only for test CI/CD pipeline on CI/CD pipeline branch
+    - if: $CI_COMMIT_BRANCH == "5-feature-05-ci-cd-pipeline"
+    
+
+stages:
+  - static_analysis
+  - unit_test
+  - build
+  - documentation
+  - deploy
+
+include:
+  - local: '/ci/static_analysis.yml'
+  - local: '/ci/unit_test.yml'
+  - local: '/ci/build.yml'
+  - local: '/ci/documentation.yml'

@@ -1,0 +1,16 @@
+unit_test:
+  stage: unit_test
+  allow_failure: true
+  script:
+    - echo "Running unit tests of API..."
+    - cd src/api
+    - pip install pytest pytest-cov
+    - pip install -r requirements.txt
+    - pytest tests/unit -v --junit-xml=junit.xml --cov=. --cov-report=term-missing --cov-report=xml --cov-fail-under=80
+  artifacts:
+    when: always
+    reports:
+      junit: src/api/junit.xml
+    paths:
+      - src/api/junit.xml
+    expire_in: 1 week
