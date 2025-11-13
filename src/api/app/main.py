@@ -11,7 +11,10 @@ from .routers import (
 )
 
 # Create database tables
-Base.metadata.create_all(bind=engine)
+import os
+# Avoid DB initialization when generating docs (e.g., with pdoc)
+if not os.environ.get("DOCS_MODE"):
+    Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Movie Recommendation API",

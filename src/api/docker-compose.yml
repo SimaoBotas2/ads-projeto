@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: movie_recommendation_db
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -31,8 +31,7 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./app:/app
-    command: uvicorn main:app --host 0.0.0.0 --port 5000 --reload
+      - ./app:/app/app
 
 volumes:
   postgres_data:
