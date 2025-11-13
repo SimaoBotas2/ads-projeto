@@ -1,5 +1,5 @@
 from .movies import router as movies_router
-from .users import router as users_router
+from .users import users_router
 from .genres import router as genres_router
 from .directors import router as directors_router
 from .cast import router as cast_router
