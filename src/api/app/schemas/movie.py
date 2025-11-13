@@ -48,9 +48,34 @@ class MovieUpdate(BaseModel):
     cast_ids: Optional[List[int]] = None
 
 
+class GenreResponse(BaseModel):
+    id: int
+    name: str
+
+    model_config = {"from_attributes": True}
+
+
+class DirectorResponse(BaseModel):
+    id: int
+    name: str
+
+    model_config = {"from_attributes": True}
+
+
+class CastResponse(BaseModel):
+    id: int
+    name: str
+    character_name: Optional[str] = None
+
+    model_config = {"from_attributes": True}
+
+
 class MovieResponse(MovieBase):
     id: int
-    
+    genres: List[GenreResponse] = []
+    directors: List[DirectorResponse] = []
+    cast_members: List[CastResponse] = []
+
     model_config = {"from_attributes": True}
 
 

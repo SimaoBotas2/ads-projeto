@@ -12,6 +12,7 @@ COPY app ./app
 COPY alembic ./alembic
 COPY alembic.ini .
 COPY .env .
+COPY seed_data.py .
 
 # Run migrations and start server
 CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 5000 --reload"]

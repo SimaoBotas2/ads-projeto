@@ -12,23 +12,25 @@ class MovieService:
     
     def get_movie(self, movie_id: int) -> Optional[MovieResponse]:
         """Get movie by ID with full details"""
-        # TODO: Implement
-        pass
+        movie = self.repository.get_by_id(movie_id)
+        if movie:
+            return MovieResponse.model_validate(movie)
+        return None
     
     def get_movies(self, skip: int = 0, limit: int = 100) -> List[MovieList]:
         """Get all movies (list view)"""
-        # TODO: Implement
-        pass
+        movies = self.repository.get_all(skip=skip, limit=limit)
+        return [MovieList.model_validate(movie) for movie in movies]
     
     def search_movies(self, query: str) -> List[MovieList]:
         """Search movies"""
-        # TODO: Implement
-        pass
-    
+        movies = self.repository.search(query)
+        return [MovieList.model_validate(movie) for movie in movies]
+
     def get_movies_by_genre(self, genre_id: int) -> List[MovieList]:
         """Get movies by genre"""
-        # TODO: Implement
-        pass
+        movies = self.repository.get_by_genre(genre_id)
+        return [MovieList.model_validate(movie) for movie in movies]
     
     def get_recommended_movies(self, user_id: int, limit: int = 10) -> List[MovieList]:
         """Get recommended movies for user"""
