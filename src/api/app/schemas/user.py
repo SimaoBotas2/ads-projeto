@@ -20,11 +20,11 @@ class UserLogin(BaseModel):
 
 
 class UserUpdate(BaseModel):
+    username: Optional[str] = Field(None, max_length=50)
     email: Optional[EmailStr] = None
     full_name: Optional[str] = Field(None, max_length=100)
     bio: Optional[str] = None
     password: Optional[str] = Field(None, min_length=8)
-
 
 class UserResponse(UserBase):
     id: int
