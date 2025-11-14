@@ -1,21 +1,3 @@
-<<<<<<< HEAD
-from fastapi import APIRouter
-
-router = APIRouter(
-    prefix="/movies",
-    tags=["movies"]
-)
-
-# TODO: Implement movie routes
-# @router.get("/", response_model=List[MovieList])
-# @router.post("/", response_model=MovieResponse)
-# @router.get("/search", response_model=List[MovieList])
-# @router.get("/{movie_id}", response_model=MovieResponse)
-# @router.put("/{movie_id}", response_model=MovieResponse)
-# @router.delete("/{movie_id}")
-# @router.get("/recommendations/{user_id}", response_model=List[MovieList])
-
-=======
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import List
@@ -51,4 +33,3 @@ def search_movies(query: str, db: Session = Depends(get_db)):
 def get_movies_by_genre(genre_id: int, db: Session = Depends(get_db)):
     service = MovieService(db)
     return service.get_movies_by_genre(genre_id)
->>>>>>> e1dafbc91e80ad4922d2c87f93fa867fdeb3d1e8
