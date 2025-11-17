@@ -1,75 +1,94 @@
-# React + TypeScript + Vite
+# Movie Recommendation Platform - Web Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interface web da plataforma de recomendação de filmes, desenvolvida com React, TypeScript, Vite e Tailwind CSS.
 
-Currently, two official plugins are available:
+## 🚀 Como Executar
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Pré-requisitos
 
-## React Compiler
+- Node.js 18+ instalado
+- npm ou yarn
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### Passos para Iniciar a Aplicação
 
-Note: This will impact Vite dev & build performances.
+1. **Navegar para o diretório web**
 
-## Expanding the ESLint configuration
+   ```powershell
+   cd src\web
+   ```
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+2. **Instalar dependências** (apenas na primeira vez)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+   ```powershell
+   npm install
+   ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+3. **Iniciar o servidor de desenvolvimento**
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+   ```powershell
+   npm run dev
+   ```
+
+4. **Abrir no browser**
+
+   A aplicação irá iniciar automaticamente e estará disponível em:
+
+   **http://localhost:5173**
+
+   Abra este endereço no seu browser preferido (Chrome, Firefox, Edge, etc.)
+
+### Outros Comandos Úteis
+
+```powershell
+# Build de produção
+npm run build
+
+# Executar linting
+npm run lint
+
+# Preview do build de produção
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🏗️ Estrutura do Projeto
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/web/
+├── src/
+│   ├── components/      # Componentes React reutilizáveis
+│   │   ├── carousel.tsx
+│   │   ├── movieCard.tsx
+│   │   ├── movieTable.tsx
+│   │   ├── navbar.tsx
+│   │   └── searchInput.tsx
+│   ├── pages/          # Páginas da aplicação
+│   │   ├── authPage.tsx
+│   │   ├── browsePage.tsx
+│   │   ├── homePage.tsx
+│   │   ├── ratingsPage.tsx
+│   │   └── wishlistPage.tsx
+│   ├── routes/         # Configuração de rotas
+│   │   └── AppRoutes.tsx
+│   ├── App.tsx         # Componente principal
+│   ├── main.tsx        # Entry point
+│   └── index.css       # Estilos globais
+├── public/             # Assets estáticos
+├── index.html
+└── package.json
+```
+
+## 🛠️ Stack Tecnológica
+
+- **React 19** - Framework UI
+- **TypeScript** - Type safety
+- **Vite** - Build tool e dev server
+- **Tailwind CSS** - Styling
+- **React Router** - Navegação
+- **Swiper** - Carousel de filmes
+- **Lucide React** - Ícones
+
+## 📝 Notas
+
+- O servidor de desenvolvimento tem hot-reload ativado, todas as alterações são refletidas automaticamente
+- A API backend deve estar a correr em `http://localhost:5000` para funcionalidade completa
+- Para produção, executar `npm run build` e servir os ficheiros da pasta `dist/`
