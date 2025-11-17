@@ -1,10 +1,11 @@
 import { useState } from "react";
-import RecommendationsCarousel from "../components/carousel";
 import Navbar from "../components/navbar";
 import SearchInput from "../components/searchInput";
 import MovieCard from "../components/movieCard";
 
 export interface Movie {
+  id: number;
+  image: string;
   title: string;
   rating: string;
 }
@@ -20,20 +21,18 @@ export default function BrowsePage() {
         <SearchInput setMoviesSearched={setMoviesSearched} />
 
         {moviesSearched && moviesSearched.length > 0 ? (
-          moviesSearched.map((movie, index) => (
-            <div key={index} className="p-6">
-              <MovieCard {...movie} />
-            </div>
-          ))
+          <div className="py-6 px-2 min-w-full flex justify-center items-start gap-12 flex-wrap">
+            {moviesSearched.map((movie, index) => (
+              <div key={index} className=" min-w-[300px]">
+                <MovieCard {...movie} />
+              </div>
+            ))}
+          </div>
         ) : (
           <div className="p-4">
-            <RecommendationsCarousel
-              title="Top 10 recomentations for you"
-              items={Array.from({ length: 12 }, (_, i) => ({
-                title: `Top Pick ${i + 1}`,
-                rating: "⭐⭐⭐⭐⭐",
-              }))}
-            />
+            <span>
+              No movies found. Please try searching for something else.
+            </span>
           </div>
         )}
       </div>

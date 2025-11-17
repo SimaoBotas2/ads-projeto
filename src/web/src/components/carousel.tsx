@@ -6,7 +6,7 @@ import "swiper/css/navigation";
 import { useRef } from "react";
 import type { Swiper as SwiperClass } from "swiper";
 import MovieCard from "./movieCard";
-import type { Movie } from "../pages/browse";
+import type { Movie } from "../pages/browsePage";
 
 interface CarouselProps {
   title: string;
@@ -40,7 +40,7 @@ export default function RecommendationsCarousel({
       <Swiper
         modules={[Navigation]}
         spaceBetween={16}
-        slidesPerView={4}
+        slidesPerView={5}
         onSwiper={(swiper) => (swiperRef.current = swiper)}
         className="pb-6"
         breakpoints={{

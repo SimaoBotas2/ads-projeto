@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import RecommendationsCarousel from "../components/carousel";
 import Navbar from "../components/navbar";
-import type { Movie } from "./browse";
 import SearchInput from "../components/searchInput";
 import MovieCard from "../components/movieCard";
+import type { Movie } from "./browsePage";
 
 export default function HomePage() {
   const genres = [
@@ -21,8 +21,10 @@ export default function HomePage() {
 
   const moviesByGenre = (genre: string) =>
     Array.from({ length: 10 }, (_, i) => ({
+      id: i + 1,
       title: `${genre} Movie ${i + 1}`,
       rating: "⭐⭐⭐⭐☆",
+      image: `https://cdn11.bigcommerce.com/s-ydriczk/images/stencil/960w/products/89058/93685/Joker-2019-Final-Style-steps-Poster-buy-original-movie-posters-at-starstills__62518.1669120603.jpg?c=2`,
     }));
 
   useEffect(() => {
@@ -53,6 +55,8 @@ export default function HomePage() {
           <RecommendationsCarousel
             title="Recommended for you"
             items={Array.from({ length: 12 }, (_, i) => ({
+              id: i + 1,
+              image: `https://cdn11.bigcommerce.com/s-ydriczk/images/stencil/960w/products/89058/93685/Joker-2019-Final-Style-steps-Poster-buy-original-movie-posters-at-starstills__62518.1669120603.jpg?c=2`,
               title: `Top Pick ${i + 1}`,
               rating: "⭐⭐⭐⭐⭐",
             }))}
