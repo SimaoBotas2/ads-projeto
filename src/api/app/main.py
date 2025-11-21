@@ -7,7 +7,7 @@ from .routers import (
     genres_router,
     directors_router,
     cast_router,
-    ratings_router
+    ratings_router,
 )
 
 # Create database tables
