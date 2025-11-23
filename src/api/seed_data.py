@@ -3,8 +3,9 @@ Seed script to add test movies to the database
 Run with: python seed_data.py
 """
 from datetime import date
+from sqlalchemy import insert
 from app.database import SessionLocal, engine, Base
-from app.models.movie import Movie
+from app.models.movie import Movie, movie_cast
 from app.models.genre import Genre
 from app.models.director import Director
 from app.models.cast import Cast
@@ -216,6 +217,24 @@ def seed_database():
         db.commit()
         print("✓ Added movies")
         
+        # Add character names for cast-movie associations
+        cast_associations = [
+            # Inception
+            {"movie_id": inception.id, "cast_id": dicaprio.id, "character_name": "Dom Cobb"},
+            # The Matrix
+            {"movie_id": matrix.id, "cast_id": reeves.id, "character_name": "Neo"},
+            {"movie_id": matrix.id, "cast_id": moss.id, "character_name": "Trinity"},
+            # Pulp Fiction
+            {"movie_id": pulp_fiction.id, "cast_id": travolta.id, "character_name": "Vincent Vega"},
+        ]
+        
+        for assoc in cast_associations:
+            stmt = insert(movie_cast).values(**assoc)
+            db.execute(stmt)
+        
+        db.commit()
+        print("✓ Added character names for cast-movie associations")
+        
         # Create Ratings
         rating1 = Rating(
             user_id=user1.id,
@@ -277,6 +296,7 @@ def seed_database():
         print(f"   - 3 users")
         print(f"   - 5 movies")
         print(f"   - 8 ratings")
+        print(f"   - 4 cast-movie associations with character names")
         print(f"\nYou can now test the API at http://localhost:5000/docs")
         
     except Exception as e:

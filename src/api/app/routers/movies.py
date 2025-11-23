@@ -3,7 +3,9 @@ from sqlalchemy.orm import Session
 from typing import List
 from ..database import get_db
 from ..services.movie_service import MovieService
+from ..services.cast_service import CastService
 from ..schemas.movie import MovieList, MovieResponse
+from ..schemas.cast import CastWithCharacterResponse
 
 router = APIRouter(
     prefix="/movies",
@@ -11,7 +13,7 @@ router = APIRouter(
 )
 
 # get movie by id
-@router.get("/{movie_id}", response_model=MovieList)
+@router.get("/{movie_id}", response_model=MovieResponse)
 def get_movie(movie_id: int, db: Session = Depends(get_db)):
     service = MovieService(db)
     return service.get_movie(movie_id)
@@ -33,3 +35,9 @@ def search_movies(query: str, db: Session = Depends(get_db)):
 def get_movies_by_genre(genre_id: int, db: Session = Depends(get_db)):
     service = MovieService(db)
     return service.get_movies_by_genre(genre_id)
+
+# get cast members for a movie
+@router.get("/{movie_id}/cast", response_model=List[CastWithCharacterResponse])
+def get_movie_cast(movie_id: int, db: Session = Depends(get_db)):
+    service = CastService(db)
+    return service.get_cast_by_movie(movie_id)

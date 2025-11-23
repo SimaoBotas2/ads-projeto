@@ -1,20 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List, Optional, Dict, Any
-from pydantic import BaseModel
+from typing import List, Optional
 
 from ..database import get_db
 from ..services.cast_service import CastService
-from ..schemas.cast import CastCreate, CastUpdate, CastResponse
-
-
-class CastMovieCreate(BaseModel):
-    movie_id: int
-    character_name: Optional[str] = None
-
-
-class CastMovieUpdate(BaseModel):
-    character_name: Optional[str] = None
+from ..schemas.cast import (
+    CastCreate, 
+    CastUpdate, 
+    CastResponse, 
+    MovieCastCreate,
+    MovieCastUpdate,
+    CastWithCharacterResponse
+)
 
 
 router = APIRouter(
@@ -63,32 +60,29 @@ def delete_cast(cast_id: int, db: Session = Depends(get_db)):
 
 
 # --- Association endpoints (cast <-> movie) ---
-@router.get("/{cast_id}/movies", response_model=List[Dict[str, Any]])
+@router.get("/{cast_id}/movies", response_model=List[dict])
 def get_movies_by_cast(cast_id: int, db: Session = Depends(get_db)):
     service = CastService(db)
     return service.get_movies_by_cast(cast_id)
 
 
-@router.post("/{cast_id}/movies", response_model=Dict[str, Any], status_code=status.HTTP_201_CREATED)
-def add_cast_to_movie(cast_id: int, payload: CastMovieCreate, db: Session = Depends(get_db)):
+@router.post("/{cast_id}/movies", response_model=dict, status_code=status.HTTP_201_CREATED)
+def add_cast_to_movie(cast_id: int, payload: MovieCastCreate, db: Session = Depends(get_db)):
     service = CastService(db)
-    # small payload wrapper to include cast_id for service
-    from pydantic import BaseModel
-
-    class _Payload(BaseModel):
-        movie_id: int
-        cast_id: int
-        character_name: Optional[str] = None
-
-    movie_cast_data = _Payload(movie_id=payload.movie_id, cast_id=cast_id, character_name=payload.character_name)
+    # Create proper payload with cast_id included
+    movie_cast_data = MovieCastCreate(
+        movie_id=payload.movie_id, 
+        cast_id=cast_id, 
+        character_name=payload.character_name
+    )
     result = service.add_cast_to_movie(movie_cast_data)
     if not result:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid movie_id, cast_id, or relation already exists")
     return result
 
 
-@router.put("/{cast_id}/movies/{movie_id}", response_model=Dict[str, str])
-def update_character_name(cast_id: int, movie_id: int, payload: CastMovieUpdate, db: Session = Depends(get_db)):
+@router.put("/{cast_id}/movies/{movie_id}", response_model=dict)
+def update_character_name(cast_id: int, movie_id: int, payload: MovieCastUpdate, db: Session = Depends(get_db)):
     service = CastService(db)
     if payload.character_name is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="character_name is required")

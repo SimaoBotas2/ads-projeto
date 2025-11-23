@@ -7,7 +7,8 @@ from ..schemas.cast import (
     CastResponse,
     MovieCastCreate, 
     MovieCastUpdate, 
-    MovieCastResponse
+    MovieCastResponse,
+    CastWithCharacterResponse
 )
 
 
@@ -16,6 +17,7 @@ class CastService:
     
     def __init__(self, db: Session):
         self.repository = CastRepository(db)
+        self.db = db
     
     # Cast Management Methods
     def get_all_cast(self, skip: int = 0, limit: int = 100) -> List[CastResponse]:
@@ -47,15 +49,51 @@ class CastService:
         return self.repository.delete(cast_id)
     
     # Movie-Cast Association Methods
-    def get_cast_by_movie(self, movie_id: int) -> List[MovieCastResponse]:
-        """Get all cast members for a movie"""
-        cast_list = self.repository.get_cast_by_movie(movie_id)
-        return [MovieCastResponse(**dict(cast)) for cast in cast_list]
+    def get_cast_by_movie(self, movie_id: int) -> List[CastWithCharacterResponse]:
+        """Get all cast members for a movie with character names"""
+        from ..models.movie import movie_cast as movie_cast_table
+        
+        results = self.db.query(movie_cast_table).filter(
+            movie_cast_table.c.movie_id == movie_id
+        ).all()
+        
+        cast_list = []
+        for row in results:
+            cast = self.repository.get_by_id(row.cast_id)
+            if cast:
+                cast_list.append(CastWithCharacterResponse(
+                    id=cast.id,
+                    name=cast.name,
+                    biography=cast.biography,
+                    birth_date=cast.birth_date,
+                    birth_place=cast.birth_place,
+                    profile_path=cast.profile_path,
+                    character_name=row.character_name
+                ))
+        return cast_list
     
-    def get_movies_by_cast(self, cast_id: int) -> List[MovieCastResponse]:
+    def get_movies_by_cast(self, cast_id: int) -> List[dict]:
         """Get all movies for a cast member"""
-        movies_list = self.repository.get_movies_by_cast(cast_id)
-        return [MovieCastResponse(**dict(movie)) for movie in movies_list]
+        from ..models.movie import movie_cast as movie_cast_table, Movie
+        
+        results = self.db.query(
+            movie_cast_table.c.movie_id,
+            Movie.title,
+            movie_cast_table.c.character_name
+        ).join(
+            Movie, movie_cast_table.c.movie_id == Movie.id
+        ).filter(
+            movie_cast_table.c.cast_id == cast_id
+        ).all()
+        
+        movies_list = []
+        for row in results:
+            movies_list.append({
+                "movie_id": row[0],
+                "title": row[1],
+                "character_name": row[2]
+            })
+        return movies_list
     
     def add_cast_to_movie(self, movie_cast_data: MovieCastCreate) -> Optional[MovieCastResponse]:
         """Add cast member to movie"""

@@ -48,6 +48,19 @@ class MovieCastResponse(MovieCastBase):
     model_config = {"from_attributes": True}
 
 
+class CastWithCharacterResponse(BaseModel):
+    """Cast member with character name for a specific movie"""
+    id: int
+    name: str
+    biography: Optional[str] = None
+    birth_date: Optional[date] = None
+    birth_place: Optional[str] = None
+    profile_path: Optional[str] = None
+    character_name: Optional[str] = None
+    
+    model_config = {"from_attributes": True}
+
+
 class MovieCastDetailResponse(BaseModel):
     movie_id: int
     cast_id: int
