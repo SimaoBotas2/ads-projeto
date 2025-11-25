@@ -57,20 +57,19 @@ class CastService:
             movie_cast_table.c.movie_id == movie_id
         ).all()
         
-        cast_list = []
-        for row in results:
-            cast = self.repository.get_by_id(row.cast_id)
-            if cast:
-                cast_list.append(CastWithCharacterResponse(
-                    id=cast.id,
-                    name=cast.name,
-                    biography=cast.biography,
-                    birth_date=cast.birth_date,
-                    birth_place=cast.birth_place,
-                    profile_path=cast.profile_path,
-                    character_name=row.character_name
-                ))
-        return cast_list
+        return [
+            CastWithCharacterResponse(
+                id=cast.id,
+                name=cast.name,
+                biography=cast.biography,
+                birth_date=cast.birth_date,
+                birth_place=cast.birth_place,
+                profile_path=cast.profile_path,
+                character_name=row.character_name
+            )
+            for row in results
+            if (cast := self.repository.get_by_id(row.cast_id)) is not None
+        ]
     
     def get_movies_by_cast(self, cast_id: int) -> List[dict]:
         """Get all movies for a cast member"""
