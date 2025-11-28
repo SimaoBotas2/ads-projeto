@@ -27,3 +27,44 @@ class CastResponse(CastBase):
     id: int
     
     model_config = {"from_attributes": True}
+
+
+# --- Movie-Cast Association Schemas ---
+class MovieCastBase(BaseModel):
+    movie_id: int
+    cast_id: int
+    character_name: Optional[str] = None
+
+
+class MovieCastCreate(MovieCastBase):
+    pass
+
+
+class MovieCastUpdate(BaseModel):
+    character_name: Optional[str] = None
+
+
+class MovieCastResponse(MovieCastBase):
+    model_config = {"from_attributes": True}
+
+
+class CastWithCharacterResponse(BaseModel):
+    """Cast member with character name for a specific movie"""
+    id: int
+    name: str
+    biography: Optional[str] = None
+    birth_date: Optional[date] = None
+    birth_place: Optional[str] = None
+    profile_path: Optional[str] = None
+    character_name: Optional[str] = None
+    
+    model_config = {"from_attributes": True}
+
+
+class MovieCastDetailResponse(BaseModel):
+    movie_id: int
+    cast_id: int
+    character_name: Optional[str] = None
+    cast_member: CastResponse
+    
+    model_config = {"from_attributes": True}

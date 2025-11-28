@@ -3,11 +3,15 @@ Seed script to add test movies to the database
 Run with: python seed_data.py
 """
 from datetime import date
+from sqlalchemy import insert
 from app.database import SessionLocal, engine, Base
-from app.models.movie import Movie
+from app.models.movie import Movie, movie_cast
 from app.models.genre import Genre
 from app.models.director import Director
 from app.models.cast import Cast
+from app.models.user import User
+from app.models.rating import Rating
+
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -16,11 +20,16 @@ def seed_database():
     db = SessionLocal()
     
     try:
-        # Check if data already exists
-        existing_movies = db.query(Movie).count()
-        if existing_movies > 0:
-            print(f"Database already has {existing_movies} movies. Skipping seed.")
-            return
+        # Delete existing data
+        print("Cleaning up existing data...")
+        db.query(Rating).delete()
+        db.query(Movie).delete()
+        db.query(User).delete()
+        db.query(Cast).delete()
+        db.query(Director).delete()
+        db.query(Genre).delete()
+        db.commit()
+        print("✓ Deleted existing data")
         
         print("Seeding database with test data...")
         
@@ -181,16 +190,113 @@ def seed_database():
             directors=[nolan],
             cast_members=[]
         )
+
+                # Create Test Users
+        user1 = User(
+            username="alice",
+            email="alice@example.com",
+            hashed_password="123"   # se usares hash real, altero isto
+        )
+        user2 = User(
+            username="bob",
+            email="bob@example.com",
+            hashed_password="123"
+        )
+        user3 = User(
+            username="charlie",
+            email="charlie@example.com",
+            hashed_password="123"
+        )
+
+        db.add_all([user1, user2, user3])
+        db.commit()
+        print("✓ Added users")
+
         
         db.add_all([inception, matrix, pulp_fiction, interstellar, dark_knight])
         db.commit()
         print("✓ Added movies")
         
+        # Add character names for cast-movie associations
+        cast_associations = [
+            # Inception
+            {"movie_id": inception.id, "cast_id": dicaprio.id, "character_name": "Dom Cobb"},
+            # The Matrix
+            {"movie_id": matrix.id, "cast_id": reeves.id, "character_name": "Neo"},
+            {"movie_id": matrix.id, "cast_id": moss.id, "character_name": "Trinity"},
+            # Pulp Fiction
+            {"movie_id": pulp_fiction.id, "cast_id": travolta.id, "character_name": "Vincent Vega"},
+        ]
+        
+        for assoc in cast_associations:
+            stmt = insert(movie_cast).values(**assoc)
+            db.execute(stmt)
+        
+        db.commit()
+        print("✓ Added character names for cast-movie associations")
+        
+        # Create Ratings
+        rating1 = Rating(
+            user_id=user1.id,
+            movie_id=inception.id,
+            rating=9.0,
+            review="Mind-bending masterpiece! Nolan really outdid himself."
+        )
+        rating2 = Rating(
+            user_id=user1.id,
+            movie_id=matrix.id,
+            rating=8.5,
+            review="Classic sci-fi action. The effects were groundbreaking for its time."
+        )
+        rating3 = Rating(
+            user_id=user2.id,
+            movie_id=pulp_fiction.id,
+            rating=9.5,
+            review="Tarantino's best work. Brilliant dialogue and storytelling."
+        )
+        rating4 = Rating(
+            user_id=user2.id,
+            movie_id=interstellar.id,
+            rating=8.8,
+            review="Spectacular visuals and emotional depth. A true epic."
+        )
+        rating5 = Rating(
+            user_id=user3.id,
+            movie_id=dark_knight.id,
+            rating=9.2,
+            review="Best superhero film ever made. Ledger's Joker is iconic."
+        )
+        rating6 = Rating(
+            user_id=user3.id,
+            movie_id=inception.id,
+            rating=8.7,
+            review="Great movie, though confusing at times. Worth multiple watches."
+        )
+        rating7 = Rating(
+            user_id=user1.id,
+            movie_id=dark_knight.id,
+            rating=9.1,
+            review="Outstanding performance by the entire cast."
+        )
+        rating8 = Rating(
+            user_id=user2.id,
+            movie_id=matrix.id,
+            rating=8.3,
+            review="Fun action movie. Still holds up pretty well."
+        )
+        
+        db.add_all([rating1, rating2, rating3, rating4, rating5, rating6, rating7, rating8])
+        db.commit()
+        print("✓ Added ratings")
+        
         print(f"\n✅ Successfully seeded database with:")
         print(f"   - 4 genres")
         print(f"   - 4 directors")
         print(f"   - 4 cast members")
+        print(f"   - 3 users")
         print(f"   - 5 movies")
+        print(f"   - 8 ratings")
+        print(f"   - 4 cast-movie associations with character names")
         print(f"\nYou can now test the API at http://localhost:5000/docs")
         
     except Exception as e:

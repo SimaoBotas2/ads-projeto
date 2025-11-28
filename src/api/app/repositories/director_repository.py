@@ -12,25 +12,46 @@ class DirectorRepository:
     
     def get_by_id(self, director_id: int) -> Optional[Director]:
         """Get director by ID"""
-        # TODO: Implement
-        pass
+        return self.db.query(Director).filter(Director.id == director_id).first()
     
     def get_all(self, skip: int = 0, limit: int = 100) -> List[Director]:
         """Get all directors with pagination"""
-        # TODO: Implement
-        pass
+        return self.db.query(Director).offset(skip).limit(limit).all()
     
     def create(self, director: DirectorCreate) -> Director:
         """Create a new director"""
-        # TODO: Implement
-        pass
+        db_director = Director(
+            name=director.name,
+            biography=director.biography,
+            birth_date=director.birth_date,
+            birth_place=director.birth_place,
+            profile_path=director.profile_path
+        )
+        self.db.add(db_director)
+        self.db.commit()
+        self.db.refresh(db_director)
+        return db_director
     
     def update(self, director_id: int, director_update: DirectorUpdate) -> Optional[Director]:
         """Update director"""
-        # TODO: Implement
-        pass
+        db_director = self.get_by_id(director_id)
+        if not db_director:
+            return None
+        
+        update_data = director_update.model_dump(exclude_unset=True)
+        for key, value in update_data.items():
+            setattr(db_director, key, value)
+        
+        self.db.commit()
+        self.db.refresh(db_director)
+        return db_director
     
     def delete(self, director_id: int) -> bool:
         """Delete director"""
-        # TODO: Implement
-        pass
+        db_director = self.get_by_id(director_id)
+        if not db_director:
+            return False
+        
+        self.db.delete(db_director)
+        self.db.commit()
+        return True

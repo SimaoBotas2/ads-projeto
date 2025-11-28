@@ -12,25 +12,43 @@ class GenreRepository:
     
     def get_by_id(self, genre_id: int) -> Optional[Genre]:
         """Get genre by ID"""
-        # TODO: Implement
-        pass
+        return self.db.query(Genre).filter(Genre.id == genre_id).first()
     
     def get_all(self) -> List[Genre]:
         """Get all genres"""
-        # TODO: Implement
-        pass
+        return self.db.query(Genre).all()
     
     def create(self, genre: GenreCreate) -> Genre:
         """Create a new genre"""
-        # TODO: Implement
-        pass
+        db_genre = Genre(
+            name=genre.name,
+            description=genre.description
+        )
+        self.db.add(db_genre)
+        self.db.commit()
+        self.db.refresh(db_genre)
+        return db_genre
     
     def update(self, genre_id: int, genre_update: GenreUpdate) -> Optional[Genre]:
         """Update genre"""
-        # TODO: Implement
-        pass
+        db_genre = self.get_by_id(genre_id)
+        if not db_genre:
+            return None
+        
+        update_data = genre_update.model_dump(exclude_unset=True)
+        for key, value in update_data.items():
+            setattr(db_genre, key, value)
+        
+        self.db.commit()
+        self.db.refresh(db_genre)
+        return db_genre
     
     def delete(self, genre_id: int) -> bool:
         """Delete genre"""
-        # TODO: Implement
-        pass
+        db_genre = self.get_by_id(genre_id)
+        if not db_genre:
+            return False
+        
+        self.db.delete(db_genre)
+        self.db.commit()
+        return True
