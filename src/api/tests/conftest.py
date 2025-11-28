@@ -1,11 +1,19 @@
 import pytest
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from api.app.database import Base, get_db
-from api.app.main import app
+from api.app.routers import (
+    movies_router,
+    users_router,
+    genres_router,
+    directors_router,
+    cast_router,
+    ratings_router,
+)
 
 
 # Create in-memory SQLite database for testing
@@ -34,6 +42,17 @@ def db_session():
 @pytest.fixture(scope="function")
 def client(db_session):
     """Create a test client with overridden database dependency"""
+    # Create FastAPI app for testing
+    app = FastAPI(title="Movie Recommendation API - Test")
+    
+    # Include routers
+    app.include_router(movies_router)
+    app.include_router(users_router)
+    app.include_router(genres_router)
+    app.include_router(directors_router)
+    app.include_router(cast_router)
+    app.include_router(ratings_router)
+    
     def override_get_db():
         try:
             yield db_session
