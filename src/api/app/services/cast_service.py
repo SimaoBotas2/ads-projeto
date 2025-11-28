@@ -64,7 +64,6 @@ class CastService:
                 biography=cast.biography,
                 birth_date=cast.birth_date,
                 birth_place=cast.birth_place,
-                profile_path=cast.profile_path,
                 character_name=row.character_name
             )
             for row in results

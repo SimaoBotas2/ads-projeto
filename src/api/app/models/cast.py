@@ -12,7 +12,6 @@ class Cast(Base):
     biography = Column(Text)
     birth_date = Column(Date)
     birth_place = Column(String(100))
-    profile_path = Column(String(300))
     
     # Relationships
     movies = relationship("Movie", secondary=movie_cast, back_populates="cast_members")

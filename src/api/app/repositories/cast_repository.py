@@ -26,8 +26,7 @@ class CastRepository:
             name=cast.name,
             biography=cast.biography,
             birth_date=cast.birth_date,
-            birth_place=cast.birth_place,
-            profile_path=cast.profile_path
+            birth_place=cast.birth_place
         )
         self.db.add(db_cast)
         self.db.commit()

@@ -8,7 +8,6 @@ class CastBase(BaseModel):
     biography: Optional[str] = None
     birth_date: Optional[date] = None
     birth_place: Optional[str] = Field(None, max_length=100)
-    profile_path: Optional[str] = Field(None, max_length=300)
 
 
 class CastCreate(CastBase):
@@ -20,7 +19,6 @@ class CastUpdate(BaseModel):
     biography: Optional[str] = None
     birth_date: Optional[date] = None
     birth_place: Optional[str] = Field(None, max_length=100)
-    profile_path: Optional[str] = Field(None, max_length=300)
 
 
 class CastResponse(CastBase):
@@ -55,7 +53,6 @@ class CastWithCharacterResponse(BaseModel):
     biography: Optional[str] = None
     birth_date: Optional[date] = None
     birth_place: Optional[str] = None
-    profile_path: Optional[str] = None
     character_name: Optional[str] = None
     
     model_config = {"from_attributes": True}
@@ -66,5 +63,5 @@ class MovieCastDetailResponse(BaseModel):
     cast_id: int
     character_name: Optional[str] = None
     cast_member: CastResponse
-    
     model_config = {"from_attributes": True}
+
