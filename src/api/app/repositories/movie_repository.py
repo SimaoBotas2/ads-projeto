@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 from ..models.movie import Movie
 from ..schemas.movie import MovieCreate, MovieUpdate
@@ -12,20 +12,40 @@ class MovieRepository:
         self.db = db
     
     def get_by_id(self, movie_id: int) -> Optional[Movie]:
-        """Get movie by ID"""
-        return self.db.query(Movie).filter(Movie.id == movie_id).first()
+        """Get movie by ID with all relationships eager-loaded"""
+        return (
+            self.db.query(Movie)
+            .options(
+                joinedload(Movie.genres),
+                joinedload(Movie.directors),
+                joinedload(Movie.cast_members),
+                joinedload(Movie.ratings)
+            )
+            .filter(Movie.id == movie_id)
+            .first()
+        )
     
     def get_all(self, skip: int = 0, limit: int = 100) -> List[Movie]:
         """Get all movies with pagination"""
         return self.db.query(Movie).offset(skip).limit(limit).all()
     
     def search(self, query: str) -> List[Movie]:
-        """Search movies by title or keyword"""
-        return self.db.query(Movie).filter(Movie.title.ilike(f"%{query}%")).all()
+        """Search movies by name or keyword"""
+        return self.db.query(Movie).filter(Movie.name.ilike(f"%{query}%")).all()
     
     def get_by_genre(self, genre_id: int) -> List[Movie]:
         """Get movies by genre"""
         return self.db.query(Movie).join(Movie.genres).filter(Genre.id == genre_id).all()
+    
+    def get_recommended(self, limit: int = 10) -> List[Movie]:
+        """Get recommended movies - simple implementation returns recent movies"""
+        return (
+            self.db.query(Movie)
+            .filter(Movie.launch_date.isnot(None))
+            .order_by(Movie.launch_date.desc())
+            .limit(limit)
+            .all()
+        )
     
     def create(self, movie: MovieCreate) -> Movie:
         """Create a new movie"""

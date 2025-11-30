@@ -9,7 +9,6 @@ from ..schemas.cast import (
     CastUpdate, 
     CastResponse, 
     MovieCastCreate,
-    MovieCastUpdate,
     CastWithCharacterResponse
 )
 
@@ -72,24 +71,12 @@ def add_cast_to_movie(cast_id: int, payload: MovieCastCreate, db: Session = Depe
     # Create proper payload with cast_id included
     movie_cast_data = MovieCastCreate(
         movie_id=payload.movie_id, 
-        cast_id=cast_id, 
-        character_name=payload.character_name
+        cast_id=cast_id
     )
     result = service.add_cast_to_movie(movie_cast_data)
     if not result:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid movie_id, cast_id, or relation already exists")
     return result
-
-
-@router.put("/{cast_id}/movies/{movie_id}", response_model=dict)
-def update_character_name(cast_id: int, movie_id: int, payload: MovieCastUpdate, db: Session = Depends(get_db)):
-    service = CastService(db)
-    if payload.character_name is None:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="character_name is required")
-    updated = service.update_character_name(movie_id, cast_id, payload.character_name)
-    if not updated:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Movie-Cast relation not found")
-    return {"message": "Character name updated successfully"}
 
 
 @router.delete("/{cast_id}/movies/{movie_id}", status_code=status.HTTP_204_NO_CONTENT)

@@ -28,7 +28,7 @@ def register_user(user_create: UserCreate, service: UserService = Depends(get_us
 @users_router.post("/login")
 def login_user(user_login: UserLogin, service: UserService = Depends(get_user_service)):
     user = service.get_user_by_username(user_login.username)
-    if not user or not service.verify_password(user_login.password, user.hashed_password):
+    if not user or not service.verify_password(user_login.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid username or password")
     return {"message": "Login successful", "user_id": user.id}
 

@@ -1,15 +1,14 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, BigInteger, String
 from sqlalchemy.orm import relationship
 from ..database import Base
-from .movie import movie_genre
+from .movie import genre_movie
 
 
 class Genre(Base):
-    __tablename__ = "genres"
+    __tablename__ = "genre"
     
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(50), unique=True, nullable=False, index=True)
-    description = Column(String(500))
+    id = Column(BigInteger, primary_key=True, index=True)
+    name = Column(String(512), unique=True, nullable=False)
     
     # Relationships
-    movies = relationship("Movie", secondary=movie_genre, back_populates="genres")
+    movies = relationship("Movie", secondary=genre_movie, back_populates="genres")
