@@ -4,6 +4,8 @@ Run with: python seed_data.py
 """
 from datetime import date
 from sqlalchemy import insert
+import hashlib
+import os
 from app.database import SessionLocal, engine, Base
 from app.models.movie import Movie, movie_cast
 from app.models.genre import Genre
@@ -11,6 +13,14 @@ from app.models.director import Director
 from app.models.cast import Cast
 from app.models.user import User
 from app.models.rating import Rating
+
+
+def hash_password(password: str) -> str:
+    """Hash password with salt for seed data"""
+    salt = os.urandom(16)
+    salt_hex = salt.hex()
+    hash_hex = hashlib.sha256(salt + password.encode()).hexdigest()
+    return f"{salt_hex}:{hash_hex}"
 
 
 # Create tables
@@ -148,19 +158,19 @@ def seed_database():
             username="alice",
             email="alice@example.com",
             name="Alice Smith",
-            password="123"   # se usares hash real, altero isto
+            password=hash_password("password123")
         )
         user2 = User(
             username="bob",
             email="bob@example.com",
             name="Bob Johnson",
-            password="123"
+            password=hash_password("password123")
         )
         user3 = User(
             username="charlie",
             email="charlie@example.com",
             name="Charlie Brown",
-            password="123"
+            password=hash_password("password123")
         )
 
         db.add_all([user1, user2, user3])
