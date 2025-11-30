@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 from typing import List, Optional
 from ..models.movie import Movie
 from ..schemas.movie import MovieCreate, MovieUpdate
@@ -12,18 +12,8 @@ class MovieRepository:
         self.db = db
     
     def get_by_id(self, movie_id: int) -> Optional[Movie]:
-        """Get movie by ID with all relationships eager-loaded"""
-        return (
-            self.db.query(Movie)
-            .options(
-                joinedload(Movie.genres),
-                joinedload(Movie.directors),
-                joinedload(Movie.cast_members),
-                joinedload(Movie.ratings)
-            )
-            .filter(Movie.id == movie_id)
-            .first()
-        )
+        """Get movie by ID"""
+        return self.db.query(Movie).filter(Movie.id == movie_id).first()
     
     def get_all(self, skip: int = 0, limit: int = 100) -> List[Movie]:
         """Get all movies with pagination"""
