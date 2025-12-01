@@ -24,10 +24,7 @@ class CastRepository:
         """Create a new cast member"""
         db_cast = Cast(
             name=cast.name,
-            biography=cast.biography,
-            birth_date=cast.birth_date,
-            birth_place=cast.birth_place,
-            profile_path=cast.profile_path
+            nacionality=cast.nacionality
         )
         self.db.add(db_cast)
         self.db.commit()
@@ -106,32 +103,12 @@ class CastRepository:
         # Add new relation
         stmt = movie_cast.insert().values(
             movie_id=movie_cast_data.movie_id,
-            cast_id=movie_cast_data.cast_id,
-            character_name=movie_cast_data.character_name
+            cast_id=movie_cast_data.cast_id
         )
         self.db.execute(stmt)
         self.db.commit()
         
         return self.get_movie_cast_relation(movie_cast_data.movie_id, movie_cast_data.cast_id)
-    
-    def update_character_name(
-        self, 
-        movie_id: int, 
-        cast_id: int, 
-        character_name: str
-    ) -> bool:
-        """Update character name for a movie-cast relation"""
-        stmt = (
-            movie_cast.update()
-            .where(
-                movie_cast.c.movie_id == movie_id,
-                movie_cast.c.cast_id == cast_id
-            )
-            .values(character_name=character_name)
-        )
-        result = self.db.execute(stmt)
-        self.db.commit()
-        return result.rowcount > 0
     
     def remove_cast_from_movie(self, movie_id: int, cast_id: int) -> bool:
         """Remove cast member from movie"""

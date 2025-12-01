@@ -1,13 +1,12 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
-from datetime import datetime
+from datetime import date
 
 
 class UserBase(BaseModel):
-    username: str = Field(..., min_length=3, max_length=50)
+    username: str = Field(..., max_length=512)
     email: EmailStr
-    full_name: Optional[str] = Field(None, max_length=100)
-    bio: Optional[str] = None
+    name: Optional[str] = Field(None, max_length=512)
 
 
 class UserCreate(UserBase):
@@ -20,15 +19,14 @@ class UserLogin(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    username: Optional[str] = Field(None, max_length=50)
+    username: Optional[str] = Field(None, max_length=512)
     email: Optional[EmailStr] = None
-    full_name: Optional[str] = Field(None, max_length=100)
-    bio: Optional[str] = None
+    name: Optional[str] = Field(None, max_length=512)
     password: Optional[str] = Field(None, min_length=8)
 
 class UserResponse(UserBase):
     id: int
-    created_at: datetime
-    updated_at: Optional[datetime] = None
+    created_at: date
+    last_login: Optional[date] = None
     
     model_config = {"from_attributes": True}

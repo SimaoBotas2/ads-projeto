@@ -21,8 +21,7 @@ class GenreRepository:
     def create(self, genre: GenreCreate) -> Genre:
         """Create a new genre"""
         db_genre = Genre(
-            name=genre.name,
-            description=genre.description
+            name=genre.name
         )
         self.db.add(db_genre)
         self.db.commit()

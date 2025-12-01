@@ -1,4 +1,5 @@
 import hashlib, os
+from datetime import date
 from sqlalchemy.orm import Session
 from ..repositories.user_repository import UserRepository
 from ..schemas.user import UserCreate, UserUpdate
@@ -29,6 +30,11 @@ class UserService:
         if updates.password:
             updates.password = self.hash_password(updates.password)
         return self.repo.update(user, updates)
+    
+    def update_last_login(self, user: User) -> None:
+        """Update the user's last login timestamp"""
+        user.last_login = date.today()
+        self.repo.db.commit()
 
     def get_user_by_id(self, user_id: int) -> Optional[User]:
         return self.repo.get_by_id(user_id)
