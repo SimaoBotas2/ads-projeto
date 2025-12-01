@@ -14,6 +14,14 @@ export default function Navbar() {
         <ul className="flex space-x-6">
           <li>
             <Link
+              to="/"
+              className="text-[#F5F5F5] hover:text-[#03DAC6] transition-colors duration-300 ease-out font-bold"
+            >
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link
               to="/browse"
               className="text-[#F5F5F5] hover:text-[#03DAC6] transition-colors duration-300 ease-out font-bold"
             >
