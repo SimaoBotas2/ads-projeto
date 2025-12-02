@@ -1,8 +1,8 @@
 """Integration tests for validation and service layer edge cases"""
 import pytest
 from fastapi.testclient import TestClient
-from app.main import app
-from app.database import Base, SessionLocal, engine
+from api.app.main import app
+from api.app.database import Base, SessionLocal, engine
 
 
 @pytest.fixture
@@ -19,7 +19,7 @@ def db_session():
 def client(db_session):
     """Create a test client with database session"""
     from fastapi import Depends
-    from app.database import get_db
+    from api.app.database import get_db
     
     def override_get_db():
         return db_session

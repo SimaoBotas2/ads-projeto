@@ -2,7 +2,7 @@
 import pytest
 from datetime import datetime, timedelta
 import jwt
-from app.utils.jwt_utils import (
+from api.app.utils.jwt_utils import (
     create_access_token,
     decode_access_token,
     SECRET_KEY,

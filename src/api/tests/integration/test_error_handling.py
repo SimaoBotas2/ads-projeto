@@ -1,7 +1,7 @@
 """Integration tests for error handling and edge cases"""
 import pytest
 from fastapi.testclient import TestClient
-from app.main import app
+from api.app.main import app
 
 
 @pytest.fixture

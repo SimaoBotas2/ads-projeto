@@ -1,13 +1,13 @@
 """Tests for database module"""
 import pytest
 from sqlalchemy import inspect
-from app.database import (
+from api.app.database import (
     engine,
     SessionLocal,
     Base,
     get_db,
 )
-from app.models import User, Movie, Genre, Director, Cast, Rating
+from api.app.models import User, Movie, Genre, Director, Cast, Rating
 
 
 class TestDatabase:
