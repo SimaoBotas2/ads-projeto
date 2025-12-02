@@ -5,9 +5,7 @@ from ..schemas.cast import (
     CastCreate, 
     CastUpdate, 
     CastResponse,
-    MovieCastCreate, 
-    MovieCastUpdate, 
-    MovieCastResponse,
+    MovieCastCreate,
     CastWithCharacterResponse
 )
 
@@ -50,7 +48,7 @@ class CastService:
     
     # Movie-Cast Association Methods
     def get_cast_by_movie(self, movie_id: int) -> List[CastWithCharacterResponse]:
-        """Get all cast members for a movie with character names"""
+        """Get all cast members for a movie"""
         from ..models.movie import movie_cast as movie_cast_table
         
         results = self.db.query(movie_cast_table).filter(
@@ -61,10 +59,14 @@ class CastService:
             CastWithCharacterResponse(
                 id=cast.id,
                 name=cast.name,
+<<<<<<< HEAD
                 biography=cast.biography,
                 birth_date=cast.birth_date,
                 birth_place=cast.birth_place,
                 character_name=row.character_name
+=======
+                nacionality=cast.nacionality
+>>>>>>> 849c1700b1ccc3b55e958f00191b9456900e4c56
             )
             for row in results
             if (cast := self.repository.get_by_id(row.cast_id)) is not None
@@ -76,8 +78,7 @@ class CastService:
         
         results = self.db.query(
             movie_cast_table.c.movie_id,
-            Movie.title,
-            movie_cast_table.c.character_name
+            Movie.name
         ).join(
             Movie, movie_cast_table.c.movie_id == Movie.id
         ).filter(
@@ -88,26 +89,16 @@ class CastService:
         for row in results:
             movies_list.append({
                 "movie_id": row[0],
-                "title": row[1],
-                "character_name": row[2]
+                "name": row[1]
             })
         return movies_list
     
-    def add_cast_to_movie(self, movie_cast_data: MovieCastCreate) -> Optional[MovieCastResponse]:
+    def add_cast_to_movie(self, movie_cast_data: MovieCastCreate) -> Optional[dict]:
         """Add cast member to movie"""
         result = self.repository.add_cast_to_movie(movie_cast_data)
         if result:
-            return MovieCastResponse(**dict(result))
+            return {"movie_id": result.movie_id, "cast_id": result.cast_id}
         return None
-    
-    def update_character_name(
-        self, 
-        movie_id: int, 
-        cast_id: int, 
-        character_name: str
-    ) -> bool:
-        """Update character name for a movie-cast relation"""
-        return self.repository.update_character_name(movie_id, cast_id, character_name)
     
     def remove_cast_from_movie(self, movie_id: int, cast_id: int) -> bool:
         """Remove cast member from movie"""

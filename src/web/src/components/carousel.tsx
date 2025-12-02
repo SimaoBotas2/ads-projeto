@@ -5,10 +5,12 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { useRef } from "react";
 import type { Swiper as SwiperClass } from "swiper";
+import MovieCard from "./movieCard";
+import type { Movie } from "../pages/browsePage";
 
 interface CarouselProps {
   title: string;
-  items: { title: string; rating?: string }[];
+  items: Movie[];
 }
 
 export default function RecommendationsCarousel({
@@ -38,7 +40,7 @@ export default function RecommendationsCarousel({
       <Swiper
         modules={[Navigation]}
         spaceBetween={16}
-        slidesPerView={4}
+        slidesPerView={5}
         onSwiper={(swiper) => (swiperRef.current = swiper)}
         className="pb-6"
         breakpoints={{
@@ -52,17 +54,7 @@ export default function RecommendationsCarousel({
             key={idx}
             className="hover:cursor-pointer active:cursor-grabbing"
           >
-            <div className="bg-[#1E1E1E] rounded-lg overflow-hidden hover:shadow-xl transition">
-              <div className="h-64 bg-gray-700"></div>
-              <div className="p-2">
-                <h3 className="font-bold text-sm text-[#F5F5F5]">
-                  {item.title}
-                </h3>
-                <p className="text-[#BBBBBB] text-xs mt-1">
-                  Rating: {item.rating || "⭐⭐⭐☆"}
-                </p>
-              </div>
-            </div>
+            <MovieCard {...item} />
           </SwiperSlide>
         ))}
       </Swiper>

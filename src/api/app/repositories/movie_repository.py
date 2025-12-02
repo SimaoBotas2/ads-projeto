@@ -20,12 +20,22 @@ class MovieRepository:
         return self.db.query(Movie).offset(skip).limit(limit).all()
     
     def search(self, query: str) -> List[Movie]:
-        """Search movies by title or keyword"""
-        return self.db.query(Movie).filter(Movie.title.ilike(f"%{query}%")).all()
+        """Search movies by name or keyword"""
+        return self.db.query(Movie).filter(Movie.name.ilike(f"%{query}%")).all()
     
     def get_by_genre(self, genre_id: int) -> List[Movie]:
         """Get movies by genre"""
         return self.db.query(Movie).join(Movie.genres).filter(Genre.id == genre_id).all()
+    
+    def get_recommended(self, limit: int = 10) -> List[Movie]:
+        """Get recommended movies - simple implementation returns recent movies"""
+        return (
+            self.db.query(Movie)
+            .filter(Movie.launch_date.isnot(None))
+            .order_by(Movie.launch_date.desc())
+            .limit(limit)
+            .all()
+        )
     
     def create(self, movie: MovieCreate) -> Movie:
         """Create a new movie"""
