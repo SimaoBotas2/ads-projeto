@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, String, Date, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Date, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from ..database import Base
@@ -7,7 +7,7 @@ from ..database import Base
 class User(Base):
     __tablename__ = "_user_"
     
-    id = Column(BigInteger, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     username = Column(String(512), nullable=False)
     name = Column(String(512))
     password = Column(String(512), nullable=False)

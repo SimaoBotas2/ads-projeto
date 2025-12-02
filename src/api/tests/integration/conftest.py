@@ -53,6 +53,19 @@ def client(db_session):
     app.include_router(cast_router)
     app.include_router(ratings_router)
     
+    # Add root and health endpoints
+    @app.get("/", tags=["root"])
+    async def root():
+        return {
+            "message": "Welcome to Movie Recommendation API",
+            "docs": "/docs",
+            "redoc": "/redoc"
+        }
+
+    @app.get("/health", tags=["health"])
+    async def health_check():
+        return {"status": "healthy"}
+    
     def override_get_db():
         try:
             yield db_session

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, String, Date, Table, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, Table, ForeignKey
 from sqlalchemy.orm import relationship
 from ..database import Base
 
@@ -7,29 +7,29 @@ from ..database import Base
 genre_movie = Table(
     'genre_movie',
     Base.metadata,
-    Column('genre_id', BigInteger, ForeignKey('genre.id', ondelete='CASCADE'), primary_key=True),
-    Column('movie_id', BigInteger, ForeignKey('movie.id', ondelete='CASCADE'), primary_key=True)
+    Column('genre_id', Integer, ForeignKey('genre.id', ondelete='CASCADE'), primary_key=True),
+    Column('movie_id', Integer, ForeignKey('movie.id', ondelete='CASCADE'), primary_key=True)
 )
 
 director_movie = Table(
     'director_movie',
     Base.metadata,
-    Column('director_id', BigInteger, ForeignKey('director.id', ondelete='CASCADE'), primary_key=True),
-    Column('movie_id', BigInteger, ForeignKey('movie.id', ondelete='CASCADE'), primary_key=True)
+    Column('director_id', Integer, ForeignKey('director.id', ondelete='CASCADE'), primary_key=True),
+    Column('movie_id', Integer, ForeignKey('movie.id', ondelete='CASCADE'), primary_key=True)
 )
 
 movie_cast = Table(
     'movie_cast',
     Base.metadata,
-    Column('movie_id', BigInteger, ForeignKey('movie.id', ondelete='CASCADE'), primary_key=True),
-    Column('cast_id', BigInteger, ForeignKey('cast.id', ondelete='CASCADE'), primary_key=True)
+    Column('movie_id', Integer, ForeignKey('movie.id', ondelete='CASCADE'), primary_key=True),
+    Column('cast_id', Integer, ForeignKey('cast.id', ondelete='CASCADE'), primary_key=True)
 )
 
 
 class Movie(Base):
     __tablename__ = "movie"
     
-    id = Column(BigInteger, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String(524), nullable=False)
     launch_date = Column(Date)
     description = Column(String(512))
