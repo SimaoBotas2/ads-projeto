@@ -11,14 +11,14 @@ class TestMovie:
             name="Test Movie",
             launch_date=date(2023, 1, 1),
             description="This is a test movie for unit testing",
-            nationality="US",
+            nationality="American",
             poster_path="/path/to/poster.jpg"
         )
         
         assert movie.name == "Test Movie"
         assert movie.launch_date == date(2023, 1, 1)
         assert movie.description == "This is a test movie for unit testing"
-        assert movie.nationality == "US"
+        assert movie.nationality == "American"
         assert movie.poster_path == "/path/to/poster.jpg"
     
     def test_movie_string_representation(self):

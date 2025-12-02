@@ -39,7 +39,7 @@ def seed_database():
         db.query(Director).delete()
         db.query(Genre).delete()
         db.commit()
-        print("✓ Deleted existing data")
+        print("Deleted existing data")
         
         print("Seeding database with test data...")
         
@@ -51,7 +51,7 @@ def seed_database():
         
         db.add_all([action, scifi, drama, thriller])
         db.commit()
-        print("✓ Added genres")
+        print("Added genres")
         
         # Create Directors
         nolan = Director(
@@ -73,7 +73,7 @@ def seed_database():
         
         db.add_all([nolan, wachowski_lana, wachowski_lilly, tarantino])
         db.commit()
-        print("✓ Added directors")
+        print("Added directors")
         
         # Create Cast Members
         dicaprio = Cast(
@@ -95,7 +95,7 @@ def seed_database():
         
         db.add_all([dicaprio, reeves, moss, travolta])
         db.commit()
-        print("✓ Added cast members")
+        print("Added cast members")
         
         # Create Movies
         inception = Movie(
@@ -175,12 +175,12 @@ def seed_database():
 
         db.add_all([user1, user2, user3])
         db.commit()
-        print("✓ Added users")
+        print("Added users")
 
         
         db.add_all([inception, matrix, pulp_fiction, interstellar, dark_knight])
         db.commit()
-        print("✓ Added movies")
+        print("Added movies")
         
         # Create Ratings (evaluation must be 1-4)
         rating1 = Rating(

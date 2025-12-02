@@ -45,5 +45,5 @@ class MovieCastDetailResponse(BaseModel):
     movie_id: int
     cast_id: int
     cast_member: CastResponse
-    
     model_config = {"from_attributes": True}
+

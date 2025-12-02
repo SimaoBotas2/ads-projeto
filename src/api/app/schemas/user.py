@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
-from datetime import date
+from datetime import date, datetime
 
 
 class UserBase(BaseModel):
@@ -26,7 +26,7 @@ class UserUpdate(BaseModel):
 
 class UserResponse(UserBase):
     id: int
-    created_at: date
+    created_at: datetime
     last_login: Optional[date] = None
     
     model_config = {"from_attributes": True}

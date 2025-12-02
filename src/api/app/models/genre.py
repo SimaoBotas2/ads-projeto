@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, String
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from ..database import Base
 from .movie import genre_movie
@@ -7,7 +7,7 @@ from .movie import genre_movie
 class Genre(Base):
     __tablename__ = "genre"
     
-    id = Column(BigInteger, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String(512), unique=True, nullable=False)
     
     # Relationships
