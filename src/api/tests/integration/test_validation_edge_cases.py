@@ -5,31 +5,6 @@ from api.app.main import app
 from api.app.database import Base, SessionLocal, engine
 
 
-@pytest.fixture
-def db_session():
-    """Create a clean database session for each test"""
-    Base.metadata.create_all(bind=engine)
-    db = SessionLocal()
-    yield db
-    db.close()
-    Base.metadata.drop_all(bind=engine)
-
-
-@pytest.fixture
-def client(db_session):
-    """Create a test client with database session"""
-    from fastapi import Depends
-    from api.app.database import get_db
-    
-    def override_get_db():
-        return db_session
-    
-    app.dependency_overrides[get_db] = override_get_db
-    client = TestClient(app)
-    yield client
-    app.dependency_overrides.clear()
-
-
 class TestUserValidation:
     """Test suite for user input validation"""
 

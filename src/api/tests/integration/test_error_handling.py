@@ -4,12 +4,6 @@ from fastapi.testclient import TestClient
 from api.app.main import app
 
 
-@pytest.fixture
-def client():
-    """Create a test client"""
-    return TestClient(app)
-
-
 class TestRootEndpoints:
     """Test suite for root endpoints"""
 
