@@ -20,9 +20,8 @@ class UserRepository:
         db_user = User(
             username=user.username,
             email=user.email,
-            full_name=user.full_name,
-            bio=user.bio,
-            hashed_password=hashed_password
+            name=user.name,
+            password=hashed_password
         )
         self.db.add(db_user)
         self.db.commit()
@@ -35,7 +34,7 @@ class UserRepository:
                 continue
             setattr(db_user, field, value)
         if updates.password:
-            db_user.hashed_password = updates.password  # hashed by service
+            db_user.password = updates.password  # hashed by service
         self.db.commit()
         self.db.refresh(db_user)
         return db_user

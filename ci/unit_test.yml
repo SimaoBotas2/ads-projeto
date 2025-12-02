@@ -6,7 +6,7 @@ unit_test:
     - cd src/api
     - pip install pytest pytest-cov
     - pip install -r requirements.txt
-    - pytest tests/unit -v --junit-xml=junit.xml --cov=. --cov-report=term-missing --cov-report=xml --cov-fail-under=80
+    - pytest tests -v --junit-xml=junit.xml --cov=. --cov-report=term-missing --cov-report=xml --cov-fail-under=80
   artifacts:
     when: always
     reports:

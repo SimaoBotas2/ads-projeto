@@ -1,7 +1,7 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from ..repositories.movie_repository import MovieRepository
-from ..schemas.movie import MovieCreate, MovieUpdate, MovieResponse, MovieList
+from ..schemas.movie import MovieCreate, MovieUpdate, MovieResponse, MovieList, RecommendedMovieResponse
 
 
 class MovieService:
@@ -13,9 +13,30 @@ class MovieService:
     def get_movie(self, movie_id: int) -> Optional[MovieResponse]:
         """Get movie by ID with full details"""
         movie = self.repository.get_by_id(movie_id)
-        if movie:
-            return MovieResponse.model_validate(movie)
-        return None
+        if not movie:
+            return None
+        
+        # Calculate average rating
+        average_rating = None
+        if movie.ratings:
+            total = sum(rating.evaluation for rating in movie.ratings)
+            average_rating = round(total / len(movie.ratings), 2)
+        
+        # Convert to dict and add average_rating
+        movie_dict = {
+            "id": movie.id,
+            "name": movie.name,
+            "launch_date": movie.launch_date,
+            "description": movie.description,
+            "nationality": movie.nationality,
+            "poster_path": movie.poster_path,
+            "genres": movie.genres,
+            "directors": movie.directors,
+            "cast_members": movie.cast_members,
+            "average_rating": average_rating
+        }
+        
+        return MovieResponse.model_validate(movie_dict)
     
     def get_movies(self, skip: int = 0, limit: int = 100) -> List[MovieList]:
         """Get all movies (list view)"""
@@ -32,10 +53,10 @@ class MovieService:
         movies = self.repository.get_by_genre(genre_id)
         return [MovieList.model_validate(movie) for movie in movies]
     
-    def get_recommended_movies(self, user_id: int, limit: int = 10) -> List[MovieList]:
-        """Get recommended movies for user"""
-        # TODO: Implement recommendation algorithm
-        pass
+    def get_recommended_movies(self, limit: int = 10) -> List[RecommendedMovieResponse]:
+        """Get recommended movies based on ratings and popularity"""
+        movies = self.repository.get_recommended(limit=limit)
+        return [RecommendedMovieResponse.model_validate(movie) for movie in movies]
     
     def create_movie(self, movie: MovieCreate) -> MovieResponse:
         """Create new movie"""

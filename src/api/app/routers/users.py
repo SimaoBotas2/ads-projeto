@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from ..schemas.user import UserCreate, UserResponse, UserLogin, UserUpdate
 from ..services.user_service import UserService
+from ..utils.jwt_utils import create_access_token
 
 users_router = APIRouter(
     prefix="/users",
@@ -28,9 +29,17 @@ def register_user(user_create: UserCreate, service: UserService = Depends(get_us
 @users_router.post("/login")
 def login_user(user_login: UserLogin, service: UserService = Depends(get_user_service)):
     user = service.get_user_by_username(user_login.username)
-    if not user or not service.verify_password(user_login.password, user.hashed_password):
+    if not user or not service.verify_password(user_login.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid username or password")
-    return {"message": "Login successful", "user_id": user.id}
+    
+    # Update last login timestamp
+    service.update_last_login(user)
+    
+    # Create JWT token with user data
+    access_token = create_access_token(
+        data={"sub": str(user.id), "username": user.username}
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 # Get user profile

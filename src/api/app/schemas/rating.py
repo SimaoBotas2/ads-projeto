@@ -1,27 +1,32 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from datetime import datetime
+from datetime import date
+
+
+class MovieSimple(BaseModel):
+    id: int
+    name: str
+    launch_date: Optional[date] = None
+    poster_path: Optional[str] = None
+    
+    model_config = {"from_attributes": True}
 
 
 class RatingBase(BaseModel):
-    movie_id: int
-    rating: float = Field(..., ge=0, le=10)
-    review: Optional[str] = None
+    evaluation: int = Field(..., gt=0, lt=5)  # Must be between 1 and 4
 
 
 class RatingCreate(RatingBase):
-    pass
+    movie_id: int
 
 
 class RatingUpdate(BaseModel):
-    rating: Optional[float] = Field(None, ge=0, le=10)
-    review: Optional[str] = None
+    evaluation: Optional[int] = Field(None, gt=0, lt=5)
 
 
 class RatingResponse(RatingBase):
     id: int
     user_id: int
-    created_at: datetime
-    updated_at: Optional[datetime] = None
+    movie: MovieSimple
     
     model_config = {"from_attributes": True}

@@ -36,8 +36,7 @@ class RatingRepository:
         new_rating = Rating(
             user_id=user_id,
             movie_id=rating.movie_id,
-            rating=rating.rating,
-            review=rating.review,
+            evaluation=rating.evaluation,
         )
         self.db.add(new_rating)
         self.db.commit()

@@ -18,5 +18,3 @@ class RecommendationRepository:
             .order_by(func.avg(Rating.rating).desc())
         ).limit(limit)
         return query.all()
-
-

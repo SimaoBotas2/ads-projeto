@@ -12,8 +12,9 @@ from .routers import (
 
 # Create database tables
 import os
-# Avoid DB initialization when generating docs (e.g., with pdoc)
-if not os.environ.get("DOCS_MODE"):
+import sys
+# Avoid DB initialization when generating docs (e.g., with pdoc) or running pytest
+if not os.environ.get("DOCS_MODE") and "pytest" not in sys.modules:
     Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -25,7 +26,7 @@ app = FastAPI(
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

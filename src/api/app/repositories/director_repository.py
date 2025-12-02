@@ -22,10 +22,7 @@ class DirectorRepository:
         """Create a new director"""
         db_director = Director(
             name=director.name,
-            biography=director.biography,
-            birth_date=director.birth_date,
-            birth_place=director.birth_place,
-            profile_path=director.profile_path
+            nacionality=director.nacionality
         )
         self.db.add(db_director)
         self.db.commit()

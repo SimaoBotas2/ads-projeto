@@ -4,6 +4,8 @@ Run with: python seed_data.py
 """
 from datetime import date
 from sqlalchemy import insert
+import hashlib
+import os
 from app.database import SessionLocal, engine, Base
 from app.models.movie import Movie, movie_cast
 from app.models.genre import Genre
@@ -11,6 +13,14 @@ from app.models.director import Director
 from app.models.cast import Cast
 from app.models.user import User
 from app.models.rating import Rating
+
+
+def hash_password(password: str) -> str:
+    """Hash password with salt for seed data"""
+    salt = os.urandom(16)
+    salt_hex = salt.hex()
+    hash_hex = hashlib.sha256(salt + password.encode()).hexdigest()
+    return f"{salt_hex}:{hash_hex}"
 
 
 # Create tables
@@ -29,163 +39,115 @@ def seed_database():
         db.query(Director).delete()
         db.query(Genre).delete()
         db.commit()
-        print("✓ Deleted existing data")
+        print("Deleted existing data")
         
         print("Seeding database with test data...")
         
         # Create Genres
-        action = Genre(name="Action", description="Action-packed movies")
-        scifi = Genre(name="Science Fiction", description="Sci-fi movies")
-        drama = Genre(name="Drama", description="Dramatic movies")
-        thriller = Genre(name="Thriller", description="Thriller movies")
+        action = Genre(name="Action")
+        scifi = Genre(name="Science Fiction")
+        drama = Genre(name="Drama")
+        thriller = Genre(name="Thriller")
         
         db.add_all([action, scifi, drama, thriller])
         db.commit()
-        print("✓ Added genres")
+        print("Added genres")
         
         # Create Directors
         nolan = Director(
             name="Christopher Nolan",
-            biography="British-American film director known for complex narratives",
-            birth_date=date(1970, 7, 30)
+            nacionality="British-American"
         )
         wachowski_lana = Director(
             name="Lana Wachowski",
-            biography="American film director and screenwriter",
-            birth_date=date(1965, 6, 21)
+            nacionality="American"
         )
         wachowski_lilly = Director(
             name="Lilly Wachowski",
-            biography="American film director and screenwriter",
-            birth_date=date(1967, 12, 29)
+            nacionality="American"
         )
         tarantino = Director(
             name="Quentin Tarantino",
-            biography="American filmmaker known for nonlinear storylines",
-            birth_date=date(1963, 3, 27)
+            nacionality="American"
         )
         
         db.add_all([nolan, wachowski_lana, wachowski_lilly, tarantino])
         db.commit()
-        print("✓ Added directors")
+        print("Added directors")
         
         # Create Cast Members
         dicaprio = Cast(
             name="Leonardo DiCaprio",
-            biography="American actor and film producer",
-            birth_date=date(1974, 11, 11)
+            nacionality="American"
         )
         reeves = Cast(
             name="Keanu Reeves",
-            biography="Canadian actor known for action films",
-            birth_date=date(1964, 9, 2)
+            nacionality="Canadian"
         )
         moss = Cast(
             name="Carrie-Anne Moss",
-            biography="Canadian actress",
-            birth_date=date(1967, 8, 21)
+            nacionality="Canadian"
         )
         travolta = Cast(
             name="John Travolta",
-            biography="American actor and singer",
-            birth_date=date(1954, 2, 18)
+            nacionality="American"
         )
         
         db.add_all([dicaprio, reeves, moss, travolta])
         db.commit()
-        print("✓ Added cast members")
+        print("Added cast members")
         
         # Create Movies
         inception = Movie(
-            title="Inception",
-            original_title="Inception",
-            overview="A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
-            tagline="Your mind is the scene of the crime",
-            release_date=date(2010, 7, 16),
-            runtime=148,
-            budget=160000000,
-            revenue=836800000,
-            imdb_id="tt1375666",
-            original_language="en",
-            popularity=85.5,
-            vote_average=8.8,
-            vote_count=35000,
+            name="Inception",
+            description="A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+            launch_date=date(2010, 7, 16),
+            nationality="USA",
+            poster_path="/inception_poster.jpg",
             genres=[action, scifi, thriller],
             directors=[nolan],
             cast_members=[dicaprio]
         )
         
         matrix = Movie(
-            title="The Matrix",
-            original_title="The Matrix",
-            overview="A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
-            tagline="Welcome to the Real World",
-            release_date=date(1999, 3, 31),
-            runtime=136,
-            budget=63000000,
-            revenue=467200000,
-            imdb_id="tt0133093",
-            original_language="en",
-            popularity=92.3,
-            vote_average=8.7,
-            vote_count=25000,
+            name="The Matrix",
+            description="A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
+            launch_date=date(1999, 3, 31),
+            nationality="USA",
+            poster_path="/matrix_poster.jpg",
             genres=[action, scifi],
             directors=[wachowski_lana, wachowski_lilly],
             cast_members=[reeves, moss]
         )
         
         pulp_fiction = Movie(
-            title="Pulp Fiction",
-            original_title="Pulp Fiction",
-            overview="The lives of two mob hitmen, a boxer, a gangster and his wife intertwine in four tales of violence and redemption.",
-            tagline="You won't know the facts until you've seen the fiction",
-            release_date=date(1994, 10, 14),
-            runtime=154,
-            budget=8000000,
-            revenue=213900000,
-            imdb_id="tt0110912",
-            original_language="en",
-            popularity=88.7,
-            vote_average=8.9,
-            vote_count=28000,
+            name="Pulp Fiction",
+            description="The lives of two mob hitmen, a boxer, a gangster and his wife intertwine in four tales of violence and redemption.",
+            launch_date=date(1994, 10, 14),
+            nationality="USA",
+            poster_path="/pulp_fiction_poster.jpg",
             genres=[thriller, drama],
             directors=[tarantino],
             cast_members=[travolta]
         )
         
         interstellar = Movie(
-            title="Interstellar",
-            original_title="Interstellar",
-            overview="A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
-            tagline="Mankind was born on Earth. It was never meant to die here.",
-            release_date=date(2014, 11, 7),
-            runtime=169,
-            budget=165000000,
-            revenue=701800000,
-            imdb_id="tt0816692",
-            original_language="en",
-            popularity=91.2,
-            vote_average=8.6,
-            vote_count=32000,
+            name="Interstellar",
+            description="A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+            launch_date=date(2014, 11, 7),
+            nationality="USA",
+            poster_path="/interstellar_poster.jpg",
             genres=[scifi, drama],
             directors=[nolan],
             cast_members=[]
         )
         
         dark_knight = Movie(
-            title="The Dark Knight",
-            original_title="The Dark Knight",
-            overview="When the menace known as the Joker wreaks havoc on Gotham, Batman must accept one of the greatest tests to fight injustice.",
-            tagline="Why So Serious?",
-            release_date=date(2008, 7, 18),
-            runtime=152,
-            budget=185000000,
-            revenue=1005000000,
-            imdb_id="tt0468569",
-            original_language="en",
-            popularity=95.8,
-            vote_average=9.0,
-            vote_count=40000,
+            name="The Dark Knight",
+            description="When the menace known as the Joker wreaks havoc on Gotham, Batman must accept one of the greatest tests to fight injustice.",
+            launch_date=date(2008, 7, 18),
+            nationality="USA",
+            poster_path="/dark_knight_poster.jpg",
             genres=[action, thriller, drama],
             directors=[nolan],
             cast_members=[]
@@ -195,94 +157,71 @@ def seed_database():
         user1 = User(
             username="alice",
             email="alice@example.com",
-            hashed_password="123"   # se usares hash real, altero isto
+            name="Alice Smith",
+            password=hash_password("password123")
         )
         user2 = User(
             username="bob",
             email="bob@example.com",
-            hashed_password="123"
+            name="Bob Johnson",
+            password=hash_password("password123")
         )
         user3 = User(
             username="charlie",
             email="charlie@example.com",
-            hashed_password="123"
+            name="Charlie Brown",
+            password=hash_password("password123")
         )
 
         db.add_all([user1, user2, user3])
         db.commit()
-        print("✓ Added users")
+        print("Added users")
 
         
         db.add_all([inception, matrix, pulp_fiction, interstellar, dark_knight])
         db.commit()
-        print("✓ Added movies")
+        print("Added movies")
         
-        # Add character names for cast-movie associations
-        cast_associations = [
-            # Inception
-            {"movie_id": inception.id, "cast_id": dicaprio.id, "character_name": "Dom Cobb"},
-            # The Matrix
-            {"movie_id": matrix.id, "cast_id": reeves.id, "character_name": "Neo"},
-            {"movie_id": matrix.id, "cast_id": moss.id, "character_name": "Trinity"},
-            # Pulp Fiction
-            {"movie_id": pulp_fiction.id, "cast_id": travolta.id, "character_name": "Vincent Vega"},
-        ]
-        
-        for assoc in cast_associations:
-            stmt = insert(movie_cast).values(**assoc)
-            db.execute(stmt)
-        
-        db.commit()
-        print("✓ Added character names for cast-movie associations")
-        
-        # Create Ratings
+        # Create Ratings (evaluation must be 1-4)
         rating1 = Rating(
             user_id=user1.id,
             movie_id=inception.id,
-            rating=9.0,
-            review="Mind-bending masterpiece! Nolan really outdid himself."
+            evaluation=4
         )
         rating2 = Rating(
             user_id=user1.id,
             movie_id=matrix.id,
-            rating=8.5,
-            review="Classic sci-fi action. The effects were groundbreaking for its time."
+            evaluation=4
         )
         rating3 = Rating(
             user_id=user2.id,
             movie_id=pulp_fiction.id,
-            rating=9.5,
-            review="Tarantino's best work. Brilliant dialogue and storytelling."
+            evaluation=4
         )
         rating4 = Rating(
             user_id=user2.id,
             movie_id=interstellar.id,
-            rating=8.8,
-            review="Spectacular visuals and emotional depth. A true epic."
+            evaluation=4
         )
         rating5 = Rating(
             user_id=user3.id,
             movie_id=dark_knight.id,
-            rating=9.2,
-            review="Best superhero film ever made. Ledger's Joker is iconic."
+            evaluation=4
         )
         rating6 = Rating(
             user_id=user3.id,
             movie_id=inception.id,
-            rating=8.7,
-            review="Great movie, though confusing at times. Worth multiple watches."
+            evaluation=4
         )
         rating7 = Rating(
             user_id=user1.id,
             movie_id=dark_knight.id,
-            rating=9.1,
-            review="Outstanding performance by the entire cast."
+            evaluation=4
         )
         rating8 = Rating(
             user_id=user2.id,
             movie_id=matrix.id,
-            rating=8.3,
-            review="Fun action movie. Still holds up pretty well."
+            evaluation=4
         )
         
         db.add_all([rating1, rating2, rating3, rating4, rating5, rating6, rating7, rating8])
@@ -296,7 +235,6 @@ def seed_database():
         print(f"   - 3 users")
         print(f"   - 5 movies")
         print(f"   - 8 ratings")
-        print(f"   - 4 cast-movie associations with character names")
         print(f"\nYou can now test the API at http://localhost:5000/docs")
         
     except Exception as e:

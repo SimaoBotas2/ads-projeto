@@ -3,8 +3,7 @@ from typing import Optional
 
 
 class GenreBase(BaseModel):
-    name: str = Field(..., max_length=50)
-    description: Optional[str] = Field(None, max_length=500)
+    name: str = Field(..., max_length=512)
 
 
 class GenreCreate(GenreBase):
@@ -12,8 +11,7 @@ class GenreCreate(GenreBase):
 
 
 class GenreUpdate(BaseModel):
-    name: Optional[str] = Field(None, max_length=50)
-    description: Optional[str] = Field(None, max_length=500)
+    name: Optional[str] = Field(None, max_length=512)
 
 
 class GenreResponse(GenreBase):
