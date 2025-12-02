@@ -4,6 +4,7 @@ from .genres import router as genres_router
 from .directors import router as directors_router
 from .cast import router as cast_router
 from .ratings import router as ratings_router
+from .recommendations import router as recommendations_router
 
 __all__ = [
     "movies_router",
@@ -11,5 +12,6 @@ __all__ = [
     "genres_router",
     "directors_router",
     "cast_router",
-    "ratings_router"
+    "ratings_router",
+    "recommendations_router"
 ]

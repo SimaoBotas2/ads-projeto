@@ -8,6 +8,7 @@ from .routers import (
     directors_router,
     cast_router,
     ratings_router,
+    recommendations_router,
 )
 
 # Create database tables
@@ -39,6 +40,7 @@ app.include_router(genres_router)
 app.include_router(directors_router)
 app.include_router(cast_router)
 app.include_router(ratings_router)
+app.include_router(recommendations_router)
 
 
 @app.get("/", tags=["root"])

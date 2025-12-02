@@ -9,7 +9,7 @@ class Director(Base):
     
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(Text, nullable=False)
-    nacionality = Column(String(512))
+    nationality = Column(String(512))
     
     # Relationships
     movies = relationship("Movie", secondary=director_movie, back_populates="directors")

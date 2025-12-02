@@ -22,7 +22,10 @@ def hash_password(password: str) -> str:
     hash_hex = hashlib.sha256(salt + password.encode()).hexdigest()
     return f"{salt_hex}:{hash_hex}"
 
-# Create tables
+# Drop and recreate all tables
+print("Dropping all existing tables...")
+Base.metadata.drop_all(bind=engine)
+print("Creating fresh tables...")
 Base.metadata.create_all(bind=engine)
 
 def seed_database():
@@ -55,19 +58,19 @@ def seed_database():
         # Create Directors
         nolan = Director(
             name="Christopher Nolan",
-            nacionality="British-American"
+            nationality="British-American"
         )
         wachowski_lana = Director(
             name="Lana Wachowski",
-            nacionality="American"
+            nationality="American"
         )
         wachowski_lilly = Director(
             name="Lilly Wachowski",
-            nacionality="American"
+            nationality="American"
         )
         tarantino = Director(
             name="Quentin Tarantino",
-            nacionality="American"
+            nationality="American"
         )
         
         db.add_all([nolan, wachowski_lana, wachowski_lilly, tarantino])
@@ -77,19 +80,19 @@ def seed_database():
         # Create Cast Members
         dicaprio = Cast(
             name="Leonardo DiCaprio",
-            nacionality="American"
+            nationality="American"
         )
         reeves = Cast(
             name="Keanu Reeves",
-            nacionality="Canadian"
+            nationality="Canadian"
         )
         moss = Cast(
             name="Carrie-Anne Moss",
-            nacionality="Canadian"
+            nationality="Canadian"
         )
         travolta = Cast(
             name="John Travolta",
-            nacionality="American"
+            nationality="American"
         )
         
         db.add_all([dicaprio, reeves, moss, travolta])

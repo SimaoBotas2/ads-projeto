@@ -35,7 +35,7 @@ class MovieRepository:
             self.db.query(Movie)
             .join(Movie.genres)
             .filter(Genre.id == genre_id)
-            .order_by(Movie.vote_average.desc())
+            .order_by(Movie.avg_rating.desc())
             .limit(limit)
             .all()
         )
@@ -64,7 +64,7 @@ class MovieRepository:
         None. `popularity` is also updated to match `vote_average` if present.
         """
         result = (
-            self.db.query(func.count(Rating.id), func.avg(Rating.rating))
+            self.db.query(func.count(Rating.id), func.avg(Rating.evaluation))
             .filter(Rating.movie_id == movie_id)
             .one()
         )
@@ -72,10 +72,8 @@ class MovieRepository:
         movie = self.get_by_id(movie_id)
         if not movie:
             return None
-        movie.vote_count = int(count or 0)
-        movie.vote_average = float(avg) if avg is not None else None
-        # Optionally update popularity; keep it aligned with vote_average
-        movie.popularity = float(avg) if avg is not None else None
+        movie.count_rating = int(count or 0)
+        movie.avg_rating = float(avg) if avg is not None else None
         self.db.commit()
         self.db.refresh(movie)
         return movie
