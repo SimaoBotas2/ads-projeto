@@ -24,13 +24,7 @@ class CastRepository:
         """Create a new cast member"""
         db_cast = Cast(
             name=cast.name,
-<<<<<<< HEAD
-            biography=cast.biography,
-            birth_date=cast.birth_date,
-            birth_place=cast.birth_place
-=======
             nacionality=cast.nacionality
->>>>>>> 849c1700b1ccc3b55e958f00191b9456900e4c56
         )
         self.db.add(db_cast)
         self.db.commit()

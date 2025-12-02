@@ -59,14 +59,7 @@ class CastService:
             CastWithCharacterResponse(
                 id=cast.id,
                 name=cast.name,
-<<<<<<< HEAD
-                biography=cast.biography,
-                birth_date=cast.birth_date,
-                birth_place=cast.birth_place,
-                character_name=row.character_name
-=======
                 nacionality=cast.nacionality
->>>>>>> 849c1700b1ccc3b55e958f00191b9456900e4c56
             )
             for row in results
             if (cast := self.repository.get_by_id(row.cast_id)) is not None
