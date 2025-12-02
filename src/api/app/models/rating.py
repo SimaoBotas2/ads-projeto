@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, Integer, ForeignKey, CheckConstraint
+from sqlalchemy import Column, Integer, ForeignKey, CheckConstraint
 from sqlalchemy.orm import relationship
 from ..database import Base
 
@@ -6,10 +6,10 @@ from ..database import Base
 class Rating(Base):
     __tablename__ = "rating"
     
-    id = Column(BigInteger, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     evaluation = Column(Integer, nullable=False)
-    user_id = Column(BigInteger, ForeignKey('_user_.id', ondelete='CASCADE'), nullable=False)
-    movie_id = Column(BigInteger, ForeignKey('movie.id', ondelete='CASCADE'), nullable=False)
+    user_id = Column(Integer, ForeignKey('_user_.id', ondelete='CASCADE'), nullable=False)
+    movie_id = Column(Integer, ForeignKey('movie.id', ondelete='CASCADE'), nullable=False)
     
     # Relationships
     user = relationship("User", back_populates="ratings")
