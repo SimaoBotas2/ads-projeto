@@ -29,7 +29,7 @@ def create_rating(rating: RatingCreate, user_id: int, db: Session = Depends(get_
     return service.create_rating(rating, user_id)
 
 
-@router.put("/{rating_id}", response_model=RatingResponse)
+@router.put("/", response_model=RatingResponse)
 def update_rating(
     rating_id: int,
     rating_update: RatingUpdate,
