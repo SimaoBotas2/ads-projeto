@@ -10,8 +10,6 @@ class RecommendationRepository:
         query = (
             self.db.query(
                 Genre.id.label("genre_id"),
-                Genre.name.label("genre_name"),
-                func.avg(Rating.rating).label("average_rating")
             )
             .join(Genre.movies)
             .join(Movie.ratings)
@@ -19,6 +17,6 @@ class RecommendationRepository:
             .group_by(Genre.id)
             .order_by(func.avg(Rating.rating).desc())
         ).limit(limit)
-        return query.all()    
+        return query.all()
 
 
