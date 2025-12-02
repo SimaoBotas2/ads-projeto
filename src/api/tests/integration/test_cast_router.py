@@ -146,3 +146,36 @@ class TestCastRouter:
         # Remove association
         response = client.delete(f"/cast/{cast_id}/movies/{movie_id}")
         assert response.status_code == 204
+
+    def test_update_cast_not_found(self, client):
+        """Test updating non-existent cast member"""
+        update_data = {"name": "Non Existent"}
+        response = client.put("/cast/999", json=update_data)
+        assert response.status_code == 404
+
+    def test_delete_cast_not_found(self, client):
+        """Test deleting non-existent cast member"""
+        response = client.delete("/cast/999")
+        assert response.status_code == 404
+
+    def test_add_cast_to_invalid_movie(self, client):
+        """Test adding cast to non-existent movie"""
+        # Create cast
+        cast_response = client.post("/cast/", json={"name": "Test Actor"})
+        cast_id = cast_response.json()["id"]
+        
+        # Try to add to non-existent movie
+        association_data = {"movie_id": 999, "character_name": "Invalid"}
+        response = client.post(f"/cast/{cast_id}/movies", json=association_data)
+        assert response.status_code == 400
+
+    def test_remove_nonexistent_cast_movie_relation(self, client):
+        """Test removing non-existent cast-movie relation"""
+        response = client.delete("/cast/999/movies/999")
+        assert response.status_code == 404
+
+    def test_get_movies_by_nonexistent_cast(self, client):
+        """Test getting movies by non-existent cast"""
+        response = client.get("/cast/999/movies")
+        assert response.status_code == 200
+        assert response.json() == []

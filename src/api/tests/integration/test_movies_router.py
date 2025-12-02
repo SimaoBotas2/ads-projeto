@@ -104,3 +104,25 @@ class TestMoviesRouter:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
+
+    def test_update_movie_not_found(self, client):
+        """Test updating non-existent movie"""
+        response = client.put("/movies/999", json={"title": "Test"})
+        assert response.status_code == 404
+
+    def test_delete_movie_not_found(self, client):
+        """Test deleting non-existent movie"""
+        response = client.delete("/movies/999")
+        assert response.status_code == 404
+
+    def test_search_movies_empty(self, client):
+        """Test searching with no results"""
+        response = client.get("/movies/search?query=NonexistentMovie123456")
+        assert response.status_code == 200
+        assert response.json() == []
+
+    def test_get_movies_by_nonexistent_genre(self, client):
+        """Test getting movies by non-existent genre"""
+        response = client.get("/movies/genre/999")
+        assert response.status_code == 200
+        assert response.json() == []

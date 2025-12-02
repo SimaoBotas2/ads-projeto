@@ -74,3 +74,23 @@ class TestDirectorsRouter:
         
         get_response = client.get(f"/directors/{director_id}")
         assert get_response.status_code == 404
+
+    def test_update_director_not_found(self, client):
+        """Test updating non-existent director"""
+        response = client.put("/directors/999", json={"name": "Test"})
+        assert response.status_code == 404
+
+    def test_delete_director_not_found(self, client):
+        """Test deleting non-existent director"""
+        response = client.delete("/directors/999")
+        assert response.status_code == 404
+
+    def test_get_all_directors_with_pagination(self, client):
+        """Test getting directors with pagination"""
+        for i in range(5):
+            client.post("/directors/", json={"name": f"Director {i}"})
+        
+        response = client.get("/directors/?skip=1&limit=2")
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data) <= 2

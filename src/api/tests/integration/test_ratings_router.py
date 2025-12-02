@@ -163,3 +163,57 @@ class TestRatingsRouter:
         # Duplicate rating should fail
         response2 = client.post("/ratings/", json=rating_data)
         assert response2.status_code == 400
+
+    def test_update_rating_not_found(self, client):
+        """Test updating non-existent rating"""
+        response = client.put("/ratings/999", json={"rating": 5.0})
+        assert response.status_code == 404
+
+    def test_delete_rating_not_found(self, client):
+        """Test deleting non-existent rating"""
+        response = client.delete("/ratings/999")
+        assert response.status_code == 404
+
+    def test_create_rating_invalid_user(self, client):
+        """Test creating rating with invalid user"""
+        movie = client.post("/movies/", json={"title": "Test Movie"})
+        movie_id = movie.json()["id"]
+        
+        rating_data = {
+            "user_id": 999,
+            "movie_id": movie_id,
+            "rating": 5.0
+        }
+        response = client.post("/ratings/", json=rating_data)
+        assert response.status_code == 400
+
+    def test_create_rating_invalid_movie(self, client):
+        """Test creating rating with invalid movie"""
+        user = client.post("/users/", json={"username": "user8", "email": "u8@test.com", "password": "pass"})
+        user_id = user.json()["id"]
+        
+        rating_data = {
+            "user_id": user_id,
+            "movie_id": 999,
+            "rating": 5.0
+        }
+        response = client.post("/ratings/", json=rating_data)
+        assert response.status_code == 400
+
+    def test_get_all_ratings_empty(self, client):
+        """Test getting all ratings when none exist"""
+        response = client.get("/ratings/")
+        assert response.status_code == 200
+        assert response.json() == []
+
+    def test_get_ratings_by_nonexistent_movie(self, client):
+        """Test getting ratings for non-existent movie"""
+        response = client.get("/ratings/movie/999")
+        assert response.status_code == 200
+        assert response.json() == []
+
+    def test_get_ratings_by_nonexistent_user(self, client):
+        """Test getting ratings by non-existent user"""
+        response = client.get("/ratings/user/999")
+        assert response.status_code == 200
+        assert response.json() == []

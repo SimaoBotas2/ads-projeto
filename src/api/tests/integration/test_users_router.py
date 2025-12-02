@@ -98,3 +98,48 @@ class TestUsersRouter:
         duplicate_data = {"username": "user2", "email": "duplicate@test.com", "password": "pass456"}
         response = client.post("/users/", json=duplicate_data)
         assert response.status_code == 400
+
+    def test_update_user_not_found(self, client):
+        """Test updating non-existent user"""
+        response = client.put("/users/999", json={"full_name": "Test"})
+        assert response.status_code == 404
+
+    def test_delete_user_not_found(self, client):
+        """Test deleting non-existent user"""
+        response = client.delete("/users/999")
+        assert response.status_code == 404
+
+    def test_get_all_users_empty(self, client):
+        """Test getting all users when none exist"""
+        response = client.get("/users/")
+        assert response.status_code == 200
+        assert response.json() == []
+
+    def test_create_user_missing_email(self, client):
+        """Test creating user without email"""
+        user_data = {"username": "nomail", "password": "pass123"}
+        response = client.post("/users/", json=user_data)
+        assert response.status_code == 422
+
+    def test_create_user_invalid_email(self, client):
+        """Test creating user with invalid email format"""
+        user_data = {"username": "bademail", "email": "not-an-email", "password": "pass123"}
+        response = client.post("/users/", json=user_data)
+        assert response.status_code == 422
+
+    def test_create_user_missing_password(self, client):
+        """Test creating user without password"""
+        user_data = {"username": "nopass", "email": "test@example.com"}
+        response = client.post("/users/", json=user_data)
+        assert response.status_code == 422
+
+    def test_update_user_email_exists(self, client):
+        """Test updating user email to one that already exists"""
+        # Create two users
+        user1 = client.post("/users/", json={"username": "user1", "email": "email1@test.com", "password": "pass"})
+        user1_id = user1.json()["id"]
+        user2 = client.post("/users/", json={"username": "user2", "email": "email2@test.com", "password": "pass"})
+        
+        # Try to update user1's email to user2's email
+        response = client.put(f"/users/{user1_id}", json={"email": "email2@test.com"})
+        assert response.status_code == 400
