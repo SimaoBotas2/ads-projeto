@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Date, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from ..database import Base
@@ -13,7 +13,7 @@ class User(Base):
     password = Column(String(512), nullable=False)
     email = Column(String(512), nullable=False)
     last_login = Column(Date)
-    created_at = Column(Date, nullable=False, server_default=func.now())
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
     
     # Relationships
     ratings = relationship("Rating", back_populates="user", cascade="all, delete-orphan")
