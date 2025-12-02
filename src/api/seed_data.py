@@ -22,7 +22,6 @@ def hash_password(password: str) -> str:
     hash_hex = hashlib.sha256(salt + password.encode()).hexdigest()
     return f"{salt_hex}:{hash_hex}"
 
-
 # Create tables
 Base.metadata.create_all(bind=engine)
 
@@ -106,7 +105,9 @@ def seed_database():
             poster_path="/inception_poster.jpg",
             genres=[action, scifi, thriller],
             directors=[nolan],
-            cast_members=[dicaprio]
+            cast_members=[dicaprio],
+            avg_rating=4.0,
+            count_rating=2
         )
         
         matrix = Movie(
@@ -117,7 +118,9 @@ def seed_database():
             poster_path="/matrix_poster.jpg",
             genres=[action, scifi],
             directors=[wachowski_lana, wachowski_lilly],
-            cast_members=[reeves, moss]
+            cast_members=[reeves, moss],
+            avg_rating=4.0,
+            count_rating=2
         )
         
         pulp_fiction = Movie(
@@ -128,7 +131,9 @@ def seed_database():
             poster_path="/pulp_fiction_poster.jpg",
             genres=[thriller, drama],
             directors=[tarantino],
-            cast_members=[travolta]
+            cast_members=[travolta],
+            avg_rating=4.0,
+            count_rating=1
         )
         
         interstellar = Movie(
@@ -139,7 +144,9 @@ def seed_database():
             poster_path="/interstellar_poster.jpg",
             genres=[scifi, drama],
             directors=[nolan],
-            cast_members=[]
+            cast_members=[],
+            avg_rating=4.0,
+            count_rating=1
         )
         
         dark_knight = Movie(
@@ -150,10 +157,12 @@ def seed_database():
             poster_path="/dark_knight_poster.jpg",
             genres=[action, thriller, drama],
             directors=[nolan],
-            cast_members=[]
+            cast_members=[],
+            avg_rating=4.0,
+            count_rating=2
         )
 
-                # Create Test Users
+        # Create Test Users
         user1 = User(
             username="alice",
             email="alice@example.com",
@@ -242,7 +251,6 @@ def seed_database():
         db.rollback()
     finally:
         db.close()
-
 
 if __name__ == "__main__":
     seed_database()

@@ -55,6 +55,7 @@ class MovieResponse(MovieBase):
     directors: List[DirectorResponse] = []
     cast_members: List[CastResponse] = []
     average_rating: Optional[float] = None
+    count_rating: int = 0
 
     model_config = {"from_attributes": True}
 

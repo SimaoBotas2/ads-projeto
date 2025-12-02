@@ -87,20 +87,20 @@ class MovieRepository:
                 update(Movie)
                 .where(Movie.id == movie_id)
                 .values(
-                    vote_count=(func.coalesce(Movie.vote_count, 0) + 1),
-                    vote_average=(
+                    count_rating=(func.coalesce(Movie.count_rating, 0) + 1),
+                    avg_rating=(
                         (
-                            func.coalesce(Movie.vote_average, 0) * func.coalesce(Movie.vote_count, 0)
+                            func.coalesce(Movie.avg_rating, 0) * func.coalesce(Movie.count_rating, 0)
                             + rating_value
                         )
-                        / (func.coalesce(Movie.vote_count, 0) + 1)
+                        / (func.coalesce(Movie.count_rating, 0) + 1)
                     ),
                     popularity=(
                         (
-                            func.coalesce(Movie.vote_average, 0) * func.coalesce(Movie.vote_count, 0)
+                            func.coalesce(Movie.avg_rating, 0) * func.coalesce(Movie.count_rating, 0)
                             + rating_value
                         )
-                        / (func.coalesce(Movie.vote_count, 0) + 1)
+                        / (func.coalesce(Movie.count_rating, 0) + 1)
                     ),
                 )
             )
@@ -121,21 +121,21 @@ class MovieRepository:
                 update(Movie)
                 .where(Movie.id == movie_id)
                 .values(
-                    vote_average=(
+                    avg_rating=(
                         (
-                            func.coalesce(Movie.vote_average, 0) * func.coalesce(Movie.vote_count, 0)
+                            func.coalesce(Movie.avg_rating, 0) * func.coalesce(Movie.count_rating, 0)
                             - float(old_rating)
                             + float(new_rating)
                         )
-                        / func.nullif(func.coalesce(Movie.vote_count, 0), 0)
+                        / func.nullif(func.coalesce(Movie.count_rating, 0), 0)
                     ),
                     popularity=(
                         (
-                            func.coalesce(Movie.vote_average, 0) * func.coalesce(Movie.vote_count, 0)
+                            func.coalesce(Movie.avg_rating, 0) * func.coalesce(Movie.count_rating, 0)
                             - float(old_rating)
                             + float(new_rating)
                         )
-                        / func.nullif(func.coalesce(Movie.vote_count, 0), 0)
+                        / func.nullif(func.coalesce(Movie.count_rating, 0), 0)
                     ),
                 )
             )
@@ -157,7 +157,7 @@ class MovieRepository:
                     None,
                 ),
                 else_=(
-                    (func.coalesce(Movie.vote_average, 0) * func.coalesce(Movie.vote_count, 0) - rating_value)
+                    (func.coalesce(Movie.avg_rating, 0) * func.coalesce(Movie.count_rating, 0) - rating_value)
                     / func.nullif(new_count_expr, 0)
                 ),
             )
@@ -165,9 +165,8 @@ class MovieRepository:
                 update(Movie)
                 .where(Movie.id == movie_id)
                 .values(
-                    vote_count=new_count_expr,
-                    vote_average=new_avg_expr,
-                    popularity=new_avg_expr,
+                    count_rating=new_count_expr,
+                    avg_rating=new_avg_expr,
                 )
             )
             self.db.commit()

@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, ForeignKey, CheckConstraint
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, ForeignKey, CheckConstraint, event
+from sqlalchemy.orm import relationship, Session
 from ..database import Base
 
 
