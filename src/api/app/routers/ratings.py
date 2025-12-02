@@ -47,7 +47,7 @@ def update_rating(
     return updated
 
 
-@router.delete("/{rating_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
 def delete_rating(rating_id: int, user_id: int, db: Session = Depends(get_db)):
     service = RatingService(db)
     deleted = service.delete_rating(rating_id, user_id)
