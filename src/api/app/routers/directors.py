@@ -5,10 +5,12 @@ from typing import List
 from ..database import get_db
 from ..services.director_service import DirectorService
 from ..schemas.director import DirectorCreate, DirectorUpdate, DirectorResponse
+from ..utils.dependencies import get_current_user
 
 router = APIRouter(
     prefix="/directors",
-    tags=["directors"]
+    tags=["directors"],
+    dependencies=[Depends(get_current_user)]
 )
 
 
