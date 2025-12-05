@@ -1,54 +1,43 @@
+# src/api/app/dependencies.py
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from typing import Optional
-from .jwt_utils import decode_access_token
+from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy.orm import Session
 
+# Adjust these imports to match your folder structure exactly
+from ..database import get_db
+from ..utils.jwt_utils import decode_access_token
+from ..services.user_service import UserService
 
-security = HTTPBearer()
+# This points to your login route so Swagger UI works
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
 
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
 
-def get_current_user_id(
-    credentials: HTTPAuthorizationCredentials = Depends(security)
-) -> int:
-    """
-    Dependency to get current authenticated user ID from JWT token
-    """
-    token = credentials.credentials
+    # 1. Decode token
     payload = decode_access_token(token)
-    
     if payload is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    
-    user_id: Optional[int] = payload.get("user_id")
-    
-    if user_id is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token payload",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    
-    return user_id
+        raise credentials_exception
 
+    # 2. Extract User ID (sub)
+    user_id_str: str = payload.get("sub")
+    if user_id_str is None:
+        raise credentials_exception
 
-def get_optional_user_id(
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False))
-) -> Optional[int]:
-    """
-    Dependency to optionally get current authenticated user ID from JWT token
-    Returns None if no token is provided
-    """
-    if credentials is None:
-        return None
-    
-    token = credentials.credentials
-    payload = decode_access_token(token)
-    
-    if payload is None:
-        return None
-    
-    return payload.get("user_id")
+    # 3. Check DB to ensure user exists
+    try:
+        user_id = int(user_id_str)
+        service = UserService(db)
+        user = service.get_user_by_id(user_id)
+        
+        if user is None:
+            raise credentials_exception
+            
+    except (ValueError, Exception):
+        raise credentials_exception
+
+    return user

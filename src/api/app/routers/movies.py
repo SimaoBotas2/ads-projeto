@@ -6,10 +6,12 @@ from ..services.movie_service import MovieService
 from ..services.cast_service import CastService
 from ..schemas.movie import MovieList, MovieResponse, RecommendedMovieResponse
 from ..schemas.cast import CastWithCharacterResponse
+from ..utils.dependencies import get_current_user
 
 router = APIRouter(
     prefix="/movies",
-    tags=["movies"]
+    tags=["movies"],
+    dependencies=[Depends(get_current_user)]
 )
 
 # get all movies
