@@ -1,8 +1,10 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import update, case, func
 from typing import List, Optional
 from ..models.movie import Movie
 from ..schemas.movie import MovieCreate, MovieUpdate
 from ..models.genre import Genre
+from ..models.rating import Rating
 
 
 class MovieRepository:
@@ -27,12 +29,13 @@ class MovieRepository:
         """Get movies by genre"""
         return self.db.query(Movie).join(Movie.genres).filter(Genre.id == genre_id).all()
     
-    def get_recommended(self, limit: int = 10) -> List[Movie]:
-        """Get recommended movies - simple implementation returns recent movies"""
+    def get_top_movies_genre_rated(self, genre_id: int, limit: int = 10) -> List[Movie]:
+        """Get top rated movies in a genre"""
         return (
             self.db.query(Movie)
-            .filter(Movie.launch_date.isnot(None))
-            .order_by(Movie.launch_date.desc())
+            .join(Movie.genres)
+            .filter(Genre.id == genre_id)
+            .order_by(Movie.avg_rating.desc())
             .limit(limit)
             .all()
         )
@@ -51,3 +54,123 @@ class MovieRepository:
         """Delete movie"""
         # TODO: Implement
         pass
+
+    def recalculate_rating(self, movie_id: int) -> Optional[Movie]:
+        """Recalculate and persist vote count and average (and popularity) for a movie.
+
+        This reads ratings for the given movie_id, updates `vote_count` and
+        `vote_average` on the Movie row and commits the change. If there are no
+        ratings the `vote_count` will be 0 and `vote_average` will be set to
+        None. `popularity` is also updated to match `vote_average` if present.
+        """
+        result = (
+            self.db.query(func.count(Rating.id), func.avg(Rating.evaluation))
+            .filter(Rating.movie_id == movie_id)
+            .one()
+        )
+        count, avg = result
+        movie = self.get_by_id(movie_id)
+        if not movie:
+            return None
+        movie.count_rating = int(count or 0)
+        movie.avg_rating = float(avg) if avg is not None else None
+        self.db.commit()
+        self.db.refresh(movie)
+        return movie
+
+    def increment_rating(self, movie_id: int, rating_value: float) -> Optional[Movie]:
+        """Atomically increment movie aggregates when a new rating is created."""
+        try:
+            self.db.execute(
+                update(Movie)
+                .where(Movie.id == movie_id)
+                .values(
+                    count_rating=(func.coalesce(Movie.count_rating, 0) + 1),
+                    avg_rating=(
+                        (
+                            func.coalesce(Movie.avg_rating, 0) * func.coalesce(Movie.count_rating, 0)
+                            + rating_value
+                        )
+                        / (func.coalesce(Movie.count_rating, 0) + 1)
+                    ),
+                    popularity=(
+                        (
+                            func.coalesce(Movie.avg_rating, 0) * func.coalesce(Movie.count_rating, 0)
+                            + rating_value
+                        )
+                        / (func.coalesce(Movie.count_rating, 0) + 1)
+                    ),
+                )
+            )
+            self.db.commit()
+            return self.get_by_id(movie_id)
+        except Exception:
+            try:
+                return self.recalculate_rating(movie_id)
+            except Exception:
+                return None
+
+    def adjust_rating_on_update(self, movie_id: int, old_rating: float, new_rating: float) -> Optional[Movie]:
+        """Atomically adjust movie aggregates when an existing rating is updated."""
+        try:
+            # numerator = vote_average*vote_count - old_rating + new_rating
+            # average = numerator / vote_count
+            self.db.execute(
+                update(Movie)
+                .where(Movie.id == movie_id)
+                .values(
+                    avg_rating=(
+                        (
+                            func.coalesce(Movie.avg_rating, 0) * func.coalesce(Movie.count_rating, 0)
+                            - float(old_rating)
+                            + float(new_rating)
+                        )
+                        / func.nullif(func.coalesce(Movie.count_rating, 0), 0)
+                    ),
+                    popularity=(
+                        (
+                            func.coalesce(Movie.avg_rating, 0) * func.coalesce(Movie.count_rating, 0)
+                            - float(old_rating)
+                            + float(new_rating)
+                        )
+                        / func.nullif(func.coalesce(Movie.count_rating, 0), 0)
+                    ),
+                )
+            )
+            self.db.commit()
+            return self.get_by_id(movie_id)
+        except Exception:
+            try:
+                return self.recalculate_rating(movie_id)
+            except Exception:
+                return None
+
+    def decrement_rating(self, movie_id: int, rating_value: float) -> Optional[Movie]:
+        """Atomically decrement movie aggregates when a rating is deleted."""
+        try:
+            new_count_expr = func.coalesce(Movie.vote_count, 0) - 1
+            new_avg_expr = case(
+                (
+                    new_count_expr == 0,
+                    None,
+                ),
+                else_=(
+                    (func.coalesce(Movie.avg_rating, 0) * func.coalesce(Movie.count_rating, 0) - rating_value)
+                    / func.nullif(new_count_expr, 0)
+                ),
+            )
+            self.db.execute(
+                update(Movie)
+                .where(Movie.id == movie_id)
+                .values(
+                    count_rating=new_count_expr,
+                    avg_rating=new_avg_expr,
+                )
+            )
+            self.db.commit()
+            return self.get_by_id(movie_id)
+        except Exception:
+            try:
+                return self.recalculate_rating(movie_id)
+            except Exception:
+                return None

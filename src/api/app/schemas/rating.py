@@ -13,7 +13,7 @@ class MovieSimple(BaseModel):
 
 
 class RatingBase(BaseModel):
-    evaluation: int = Field(..., gt=0, lt=5)  # Must be between 1 and 4
+    evaluation: int = Field(..., ge=1, le=5)  # Must be between 1 and 5
 
 
 class RatingCreate(RatingBase):
@@ -21,7 +21,7 @@ class RatingCreate(RatingBase):
 
 
 class RatingUpdate(BaseModel):
-    evaluation: Optional[int] = Field(None, gt=0, lt=5)
+    evaluation: Optional[int] = Field(None, ge=1, le=5)
 
 
 class RatingResponse(RatingBase):

@@ -9,7 +9,7 @@ class Cast(Base):
     
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String(512), nullable=False)
-    nacionality = Column(String(512))
+    nationality = Column(String(512))
     
     # Relationships
     movies = relationship("Movie", secondary=movie_cast, back_populates="cast_members")

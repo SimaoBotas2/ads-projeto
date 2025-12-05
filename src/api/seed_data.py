@@ -22,8 +22,10 @@ def hash_password(password: str) -> str:
     hash_hex = hashlib.sha256(salt + password.encode()).hexdigest()
     return f"{salt_hex}:{hash_hex}"
 
-
-# Create tables
+# Drop and recreate all tables
+print("Dropping all existing tables...")
+Base.metadata.drop_all(bind=engine)
+print("Creating fresh tables...")
 Base.metadata.create_all(bind=engine)
 
 def seed_database():
@@ -56,19 +58,19 @@ def seed_database():
         # Create Directors
         nolan = Director(
             name="Christopher Nolan",
-            nacionality="British-American"
+            nationality="British-American"
         )
         wachowski_lana = Director(
             name="Lana Wachowski",
-            nacionality="American"
+            nationality="American"
         )
         wachowski_lilly = Director(
             name="Lilly Wachowski",
-            nacionality="American"
+            nationality="American"
         )
         tarantino = Director(
             name="Quentin Tarantino",
-            nacionality="American"
+            nationality="American"
         )
         
         db.add_all([nolan, wachowski_lana, wachowski_lilly, tarantino])
@@ -78,19 +80,19 @@ def seed_database():
         # Create Cast Members
         dicaprio = Cast(
             name="Leonardo DiCaprio",
-            nacionality="American"
+            nationality="American"
         )
         reeves = Cast(
             name="Keanu Reeves",
-            nacionality="Canadian"
+            nationality="Canadian"
         )
         moss = Cast(
             name="Carrie-Anne Moss",
-            nacionality="Canadian"
+            nationality="Canadian"
         )
         travolta = Cast(
             name="John Travolta",
-            nacionality="American"
+            nationality="American"
         )
         
         db.add_all([dicaprio, reeves, moss, travolta])
@@ -106,7 +108,9 @@ def seed_database():
             poster_path="/inception_poster.jpg",
             genres=[action, scifi, thriller],
             directors=[nolan],
-            cast_members=[dicaprio]
+            cast_members=[dicaprio],
+            avg_rating=4.0,
+            count_rating=2
         )
         
         matrix = Movie(
@@ -117,7 +121,9 @@ def seed_database():
             poster_path="/matrix_poster.jpg",
             genres=[action, scifi],
             directors=[wachowski_lana, wachowski_lilly],
-            cast_members=[reeves, moss]
+            cast_members=[reeves, moss],
+            avg_rating=4.0,
+            count_rating=2
         )
         
         pulp_fiction = Movie(
@@ -128,7 +134,9 @@ def seed_database():
             poster_path="/pulp_fiction_poster.jpg",
             genres=[thriller, drama],
             directors=[tarantino],
-            cast_members=[travolta]
+            cast_members=[travolta],
+            avg_rating=4.0,
+            count_rating=1
         )
         
         interstellar = Movie(
@@ -139,7 +147,9 @@ def seed_database():
             poster_path="/interstellar_poster.jpg",
             genres=[scifi, drama],
             directors=[nolan],
-            cast_members=[]
+            cast_members=[],
+            avg_rating=4.0,
+            count_rating=1
         )
         
         dark_knight = Movie(
@@ -150,10 +160,12 @@ def seed_database():
             poster_path="/dark_knight_poster.jpg",
             genres=[action, thriller, drama],
             directors=[nolan],
-            cast_members=[]
+            cast_members=[],
+            avg_rating=4.0,
+            count_rating=2
         )
 
-                # Create Test Users
+        # Create Test Users
         user1 = User(
             username="alice",
             email="alice@example.com",
@@ -242,7 +254,6 @@ def seed_database():
         db.rollback()
     finally:
         db.close()
-
 
 if __name__ == "__main__":
     seed_database()
