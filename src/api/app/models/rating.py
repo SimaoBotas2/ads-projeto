@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, ForeignKey, CheckConstraint
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, ForeignKey, CheckConstraint, event
+from sqlalchemy.orm import relationship, Session
 from ..database import Base
 
 
@@ -16,5 +16,5 @@ class Rating(Base):
     movie = relationship("Movie", back_populates="ratings")
     
     __table_args__ = (
-        CheckConstraint('evaluation > 0 AND evaluation < 5', name='evaluation'),
+        CheckConstraint('evaluation >= 1 AND evaluation <= 5', name='evaluation_check'),
     )

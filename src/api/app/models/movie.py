@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, Table, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, Table, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
 from ..database import Base
 
@@ -35,7 +35,9 @@ class Movie(Base):
     description = Column(String(512))
     nationality = Column(String(512))
     poster_path = Column(String(512))
-    
+    avg_rating = Column(Numeric(3, 1), default=0)
+    count_rating = Column(Integer, default=0)
+
     # Relationships
     genres = relationship("Genre", secondary=genre_movie, back_populates="movies")
     directors = relationship("Director", secondary=director_movie, back_populates="movies")

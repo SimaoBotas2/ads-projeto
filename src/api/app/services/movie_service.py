@@ -16,27 +16,7 @@ class MovieService:
         if not movie:
             return None
         
-        # Calculate average rating
-        average_rating = None
-        if movie.ratings:
-            total = sum(rating.evaluation for rating in movie.ratings)
-            average_rating = round(total / len(movie.ratings), 2)
-        
-        # Convert to dict and add average_rating
-        movie_dict = {
-            "id": movie.id,
-            "name": movie.name,
-            "launch_date": movie.launch_date,
-            "description": movie.description,
-            "nationality": movie.nationality,
-            "poster_path": movie.poster_path,
-            "genres": movie.genres,
-            "directors": movie.directors,
-            "cast_members": movie.cast_members,
-            "average_rating": average_rating
-        }
-        
-        return MovieResponse.model_validate(movie_dict)
+        return MovieResponse.model_validate(movie)
     
     def get_movies(self, skip: int = 0, limit: int = 100) -> List[MovieList]:
         """Get all movies (list view)"""
@@ -62,12 +42,12 @@ class MovieService:
         """Create new movie"""
         # TODO: Implement
         pass
-    
+
     def update_movie(self, movie_id: int, movie_update: MovieUpdate) -> Optional[MovieResponse]:
         """Update movie"""
         # TODO: Implement
         pass
-    
+
     def delete_movie(self, movie_id: int) -> bool:
         """Delete movie"""
         # TODO: Implement
