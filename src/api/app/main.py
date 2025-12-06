@@ -11,11 +11,19 @@ from .routers import (
     recommendations_router,
 )
 
-# Create database tables
+# Database table creation should be performed by migrations (alembic).
+# To keep backwards compatibility for simple local development you can enable
+# automatic `create_all` by setting the `ENABLE_CREATE_ALL` environment
+# variable to a truthy value (1/true/yes). By default this is disabled so
+# the app does not perform schema changes on import (which can mask
+# migration issues and cause startup ordering dependencies).
 import os
 import sys
-# Avoid DB initialization when generating docs (e.g., with pdoc) or running pytest
-if not os.environ.get("DOCS_MODE") and "pytest" not in sys.modules:
+if (
+    os.environ.get("ENABLE_CREATE_ALL", "false").lower() in ("1", "true", "yes")
+    and not os.environ.get("DOCS_MODE")
+    and "pytest" not in sys.modules
+):
     Base.metadata.create_all(bind=engine)
 
 app = FastAPI(

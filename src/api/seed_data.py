@@ -6,6 +6,7 @@ from datetime import date
 from sqlalchemy import insert
 import hashlib
 import os
+import sys
 from app.database import SessionLocal, engine, Base
 from app.models.movie import Movie, movie_cast
 from app.models.genre import Genre
@@ -22,26 +23,25 @@ def hash_password(password: str) -> str:
     hash_hex = hashlib.sha256(salt + password.encode()).hexdigest()
     return f"{salt_hex}:{hash_hex}"
 
-# Drop and recreate all tables
-print("Dropping all existing tables...")
-Base.metadata.drop_all(bind=engine)
-print("Creating fresh tables...")
-Base.metadata.create_all(bind=engine)
+# NOTE: Do NOT drop or create tables here. Use alembic migrations to manage schema.
+print("Seeding script started. Ensure migrations have already been applied (alembic upgrade head).")
 
 def seed_database():
     db = SessionLocal()
     
     try:
+        # If there is already movie data, assume DB has been seeded/migrated and skip.
+        existing = db.query(Movie).first()
+        if existing:
+            print("Database already contains data; skipping seeding.")
+            return
+
         # Delete existing data
-        print("Cleaning up existing data...")
+        print("Cleaning up any partial data (ratings only)...")
+        # Only remove ratings to avoid destructive operations in production
         db.query(Rating).delete()
-        db.query(Movie).delete()
-        db.query(User).delete()
-        db.query(Cast).delete()
-        db.query(Director).delete()
-        db.query(Genre).delete()
         db.commit()
-        print("Deleted existing data")
+        print("Deleted existing ratings")
         
         print("Seeding database with test data...")
         
@@ -252,8 +252,10 @@ def seed_database():
     except Exception as e:
         print(f"❌ Error seeding database: {e}")
         db.rollback()
+        sys.exit(1)
     finally:
         db.close()
 
 if __name__ == "__main__":
     seed_database()
+    print("Seeding finished.")
