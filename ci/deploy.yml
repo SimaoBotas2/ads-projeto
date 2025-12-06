@@ -2,9 +2,10 @@ deploy:
   stage: deploy
   before_script:
     - docker version
-    - docker-compose version
+    - docker compose version
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   script:
     - cd ci
-    - docker-compose -f docker-compose.yml up -d --build
+    - docker compose -f docker-compose.yml up -d --build
   tags:
     - deploy
