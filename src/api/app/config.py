@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    database_url: str = "postgresql://user:password@localhost:5433/movie_recommendation_db"
+    database_url: str = "postgresql://user:password@localhost:5432/movie_recommendation_db"
     
     model_config = SettingsConfigDict(
         env_file=".env",
