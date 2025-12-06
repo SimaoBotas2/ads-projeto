@@ -1,93 +1,246 @@
-# ADS-PROJETO
+# Movie Recommendation API
 
+A FastAPI-based movie recommendation platform with user authentication, movie browsing, and rating functionality.
 
+## Tech Stack
 
-## Getting started
+- **Backend**: FastAPI (Python 3.12)
+- **Database**: PostgreSQL 15
+- **ORM**: SQLAlchemy 2.0
+- **Migrations**: Alembic
+- **Authentication**: JWT tokens
+- **Containerization**: Docker & Docker Compose
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Features
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- User registration and authentication with JWT
+- Browse movies with detailed information (genres, directors, cast, ratings)
+- Search movies by name
+- Filter movies by genre
+- Get movie recommendations
+- Rate movies (1-5 scale)
+- Average rating calculation per movie
 
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+## Project Structure
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/botassimao/ads-projeto.git
-git branch -M main
-git push -uf origin main
+ads-projeto/
+├── src/
+│   ├── api/                    # Backend API
+│   │   ├── app/
+│   │   │   ├── models/         # SQLAlchemy models
+│   │   │   ├── schemas/        # Pydantic schemas
+│   │   │   ├── repositories/   # Database operations
+│   │   │   ├── services/       # Business logic
+│   │   │   ├── routers/        # API endpoints
+│   │   │   └── utils/          # Utilities (JWT, etc.)
+│   │   ├── alembic/            # Database migrations
+│   │   ├── seed_data.py        # Test data seeding script
+│   │   ├── Dockerfile
+│   │   └── docker-compose.yml
+│   └── web/                    # Frontend (if applicable)
+└── docs/                       # Documentation
 ```
 
-## Integrate with your tools
+## Getting Started
 
-- [ ] [Set up project integrations](https://gitlab.com/botassimao/ads-projeto/-/settings/integrations)
+### Prerequisites
 
-## Collaborate with your team
+- Docker Desktop installed and running
+- Git (to clone the repository)
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+### Installation & Setup
 
-## Test and Deploy
+1. **Clone the repository**
 
-Use the built-in continuous integration in GitLab.
+   ```bash
+   git clone https://gitlab.com/botassimao/ads-projeto.git
+   cd ads-projeto
+   ```
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+2. **Navigate to the API directory**
 
-***
+   ```bash
+   cd src/api
+   ```
 
-# Editing this README
+3. **Build and start the containers**
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+   ```bash
+   docker compose up --build
+   ```
 
-## Suggestions for a good README
+   This will:
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+   - Build the FastAPI application image
+   - Start PostgreSQL database container
+   - Start the API container
+   - Run database migrations automatically
+   - Start the API server on http://localhost:5000
 
-## Name
-Choose a self-explaining name for your project.
+4. **Seed the database with test data** (in a new terminal)
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+   ```bash
+   docker compose exec api python seed_data.py
+   ```
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### Accessing the API
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+- **API Documentation (Swagger UI)**: http://localhost:5000/docs
+- **Alternative API Documentation (ReDoc)**: http://localhost:5000/redoc
+- **Health Check**: http://localhost:5000/health
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## API Endpoints
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+### Authentication
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+- `POST /users/register` - Register a new user
+- `POST /users/login` - Login and receive JWT token
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+### Movies
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+- `GET /movies/` - List all movies
+- `GET /movies/{movie_id}` - Get movie details with average rating
+- `GET /movies/search/?query={query}` - Search movies by name
+- `GET /movies/genre/{genre_id}` - Get movies by genre
+- `GET /movies/recommendations/top` - Get top recommended movies
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+### Users
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+- `GET /users/{user_id}` - Get user profile
+- `PUT /users/{user_id}` - Update user profile
+- `DELETE /users/{user_id}` - Delete user
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+### Ratings
+
+- `POST /ratings/` - Create a new rating
+- `GET /ratings/user/{user_id}` - Get all ratings by a user
+- `GET /ratings/movie/{movie_id}` - Get all ratings for a movie
+
+### Genres, Directors, Cast
+
+- `GET /genres/` - List all genres
+- `GET /directors/` - List all directors
+- `GET /cast/` - List all cast members
+
+## Usage Examples
+
+### Register a new user
+
+```bash
+curl -X POST http://localhost:5000/users/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "newuser",
+    "email": "user@example.com",
+    "name": "New User",
+    "password": "securepassword"
+  }'
+```
+
+### Login
+
+```bash
+curl -X POST http://localhost:5000/users/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "alice",
+    "password": "password123"
+  }'
+```
+
+### Get movie details
+
+```bash
+curl http://localhost:5000/movies/1
+```
+
+### Search movies
+
+```bash
+curl http://localhost:5000/movies/search/?query=inception
+```
+
+## Development
+
+### Stop the containers
+
+```bash
+docker compose down
+```
+
+### Restart after code changes
+
+```bash
+docker compose restart api
+```
+
+### Rebuild after dependency changes
+
+```bash
+docker compose down
+docker compose up --build
+```
+
+### View logs
+
+```bash
+docker compose logs api --tail 50
+```
+
+### Access the database directly
+
+```bash
+docker compose exec db psql -U postgres -d movie_recommendation
+```
+
+## Database Schema
+
+The application uses the following main tables:
+
+- `movie` - Movie information
+- `genre` - Movie genres
+- `director` - Movie directors
+- `cast` - Cast members
+- `_user_` - User accounts
+- `rating` - Movie ratings by users
+- Association tables for many-to-many relationships
+
+## Environment Variables
+
+Default configuration in `docker-compose.yml`:
+
+- `DATABASE_URL`: PostgreSQL connection string
+- `POSTGRES_USER`: Database user
+- `POSTGRES_PASSWORD`: Database password
+- `POSTGRES_DB`: Database name
+
+## Testing
+
+Test the API endpoints using:
+
+- Swagger UI at http://localhost:5000/docs (interactive testing)
+- Postman or any HTTP client
+- curl commands (see examples above)
+
+## Notes
+
+- All passwords are hashed using SHA-256 with salt
+- JWT tokens expire after 30 minutes
+- The `last_login` field updates automatically on user login
+- Movie ratings are on a scale of 1-5
+- Average ratings are calculated dynamically when fetching movie details
+
+## Troubleshooting
+
+**Containers won't start**: Ensure Docker Desktop is running and ports 5000 and 5432 are not in use.
+
+**Database connection errors**: Wait a few seconds for PostgreSQL to fully initialize on first startup.
+
+**Changes not reflected**: Restart the API container with `docker compose restart api`.
+
+**Need to reset database**: Run `docker compose down -v` to remove volumes, then `docker compose up --build`.
 
 ## License
-For open source projects, say how it is licensed.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+This project is part of an academic assignment for the ADS course.
