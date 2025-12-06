@@ -19,14 +19,14 @@ class TestDirectorsRouter:
         assert data["name"] == "Steven Spielberg"
         assert "id" in data
 
-    def test_create_director_with_nacionality(self, client):
-        """Test creating a director with nacionality"""
-        director_data = {"name": "Christopher Nolan", "nacionality": "British"}
+    def test_create_director_with_nationality(self, client):
+        """Test creating a director with nationality"""
+        director_data = {"name": "Christopher Nolan", "nationality": "British"}
         response = client.post("/directors/", json=director_data)
         assert response.status_code == 201
         data = response.json()
         assert data["name"] == "Christopher Nolan"
-        assert data["nacionality"] == "British"
+        assert data["nationality"] == "British"
 
     def test_get_all_directors(self, client):
         """Test getting all directors"""
@@ -56,7 +56,7 @@ class TestDirectorsRouter:
         create_response = client.post("/directors/", json={"name": "Old Name"})
         director_id = create_response.json()["id"]
         
-        update_data = {"name": "New Name", "nacionality": "American"}
+        update_data = {"name": "New Name", "nationality": "American"}
         response = client.put(f"/directors/{director_id}", json=update_data)
         assert response.status_code == 200
         data = response.json()

@@ -22,7 +22,7 @@ class DirectorRepository:
         """Create a new director"""
         db_director = Director(
             name=director.name,
-            nacionality=director.nacionality
+            nationality=director.nationality
         )
         self.db.add(db_director)
         self.db.commit()
