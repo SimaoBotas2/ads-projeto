@@ -10,6 +10,8 @@ build:
     matrix:
       - IMAGE_NAME: api
         CONTEXT_PATH: ./src/api
+      - IMAGE_NAME: web
+        CONTEXT_PATH: ./src/web
   before_script:
     - buildah login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
