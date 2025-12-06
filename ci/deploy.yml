@@ -7,5 +7,10 @@ deploy:
   script:
     - cd ci
     - docker compose -f docker-compose.yml up -d --build
+    - echo "Deployment completed successfully."
+    - echo "Deployed services:"
+    - docker ps
+    - echo "You can access the web application at http://{$GCLOUD_IP}"
+    - echo "You can access the API at http://{$GCLOUD_IP}/api"
   tags:
     - deploy
