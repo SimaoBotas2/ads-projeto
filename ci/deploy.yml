@@ -1,6 +1,5 @@
 deploy:
   stage: deploy
-  dependencies: []
   before_script:
     - docker version
     - docker compose version
