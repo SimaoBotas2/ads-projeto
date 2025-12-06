@@ -1,0 +1,13 @@
+deploy:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh
+    - mkdir -p ~/.ssh
+    - echo "$GCLOUD_KEY_SSH" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H "$GCLOUD_IP" >> ~/.ssh/known_hosts
+  script:
+    - ssh -i ~/.ssh/id_rsa "$GCLOUD_USER@$GCLOUD_IP" "ls -la"
+  only:
+    - 15-deployments

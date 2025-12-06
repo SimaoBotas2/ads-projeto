@@ -3,12 +3,11 @@ Seed script to add test movies to the database
 Run with: python seed_data.py
 """
 from datetime import date
-from sqlalchemy import insert
 import hashlib
 import os
 import sys
-from app.database import SessionLocal, engine, Base
-from app.models.movie import Movie, movie_cast
+from app.database import SessionLocal
+from app.models.movie import Movie
 from app.models.genre import Genre
 from app.models.director import Director
 from app.models.cast import Cast

@@ -6,13 +6,14 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     # only for test CI/CD pipeline on CI/CD pipeline branch
     - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "15-deployments"
     
 
 stages:
-  - static_analysis
-  - unit_test
-  - build
-  - documentation
+  # - static_analysis
+  # - unit_test
+  # - build
+  # - documentation
   - deploy
 
 include:
@@ -20,3 +21,4 @@ include:
   - local: '/ci/unit_test.yml'
   - local: '/ci/build.yml'
   - local: '/ci/documentation.yml'
+  - local: '/ci/deploy.yml'
