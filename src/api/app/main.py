@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .database import engine, Base
 from .routers import (
     movies_router,
     users_router,
@@ -11,20 +10,8 @@ from .routers import (
     recommendations_router,
 )
 
-# Database table creation should be performed by migrations (alembic).
-# To keep backwards compatibility for simple local development you can enable
-# automatic `create_all` by setting the `ENABLE_CREATE_ALL` environment
-# variable to a truthy value (1/true/yes). By default this is disabled so
-# the app does not perform schema changes on import (which can mask
-# migration issues and cause startup ordering dependencies).
-import os
-import sys
-if (
-    os.environ.get("ENABLE_CREATE_ALL", "false").lower() in ("1", "true", "yes")
-    and not os.environ.get("DOCS_MODE")
-    and "pytest" not in sys.modules
-):
-    Base.metadata.create_all(bind=engine)
+# Database schema is managed by Alembic migrations.
+# Run 'alembic upgrade head' before starting the application.
 
 app = FastAPI(
     title="Movie Recommendation API",
