@@ -18,6 +18,7 @@ services:
 
   api:
     image: registry.gitlab.com/botassimao/ads-projeto/api:latest
+    pull_policy: always
     container_name: movie_recommendation_api
     ports:
       - "5005:5005"
@@ -30,6 +31,7 @@ services:
       - ./app:/app/app
   web:
     image: registry.gitlab.com/botassimao/ads-projeto/web:latest
+    pull_policy: always
     container_name: movie_recommendation_web
     ports:
       - "80:80"
