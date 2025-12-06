@@ -29,16 +29,40 @@ class MovieRepository:
         """Get movies by genre"""
         return self.db.query(Movie).join(Movie.genres).filter(Genre.id == genre_id).all()
     
-    def get_top_movies_genre_rated(self, genre_id: int, limit: int = 10) -> List[Movie]:
-        """Get top rated movies in a genre"""
-        return (
+    def get_top_movies_for_user_genres(self, user_id: int, genre_limit: int = 5, movie_limit: int = 10) -> List[Movie]:
+        """Return top movies ordered by the user's genre average then by movie avg.
+        """
+        # Query to obtain top genres for the user with their average ratings
+        genre_top_user = (
+            self.db.query(
+                Genre.id.label("genre_id"),
+                func.avg(Rating.evaluation).label("genre_avg"),
+            )
+            .join(Genre.movies)
+            .join(Movie.ratings)
+            .filter(Rating.user_id == user_id)
+            .group_by(Genre.id)
+            .order_by(func.avg(Rating.evaluation).desc())
+            .limit(genre_limit)
+            .subquery()
+        )
+
+        # Order movies by genre average then movie average
+        q = (
             self.db.query(Movie)
             .join(Movie.genres)
-            .filter(Genre.id == genre_id)
-            .order_by(Movie.avg_rating.desc())
-            .limit(limit)
-            .all()
+            .join(genre_top_user, genre_top_user.c.genre_id == Genre.id)
+            .group_by(Movie.id)
+            .distinct(Movie.id)
+            .order_by(
+                func.max(genre_top_user.c.genre_avg).desc(),
+                Movie.avg_rating.desc()
+            )
+            .limit(movie_limit)
         )
+
+        return q.all()
+
     
     def create(self, movie: MovieCreate) -> Movie:
         """Create a new movie"""
