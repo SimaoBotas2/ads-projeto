@@ -52,11 +52,6 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Documentation:
-    - Project Overview: PROJECT_OVERVIEW.md
-    - Quick Reference: QUICK_REFERENCE.md
-    - Implementation Examples: IMPLEMENTATION_EXAMPLES.md
-    - Setup Guide: SETUP_COMPLETE.md
   - Architecture:
     - Architecture Diagrams: ARCH/architecture_diagrams.md
   - Entity Relationship:

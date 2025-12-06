@@ -10,10 +10,10 @@ workflow:
     
 
 stages:
-  # - static_analysis
-  # - unit_test
+  - static_analysis
+  - unit_test
   - build
-  # - documentation
+  - documentation
   - deploy
 
 include:
