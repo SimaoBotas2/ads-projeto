@@ -184,7 +184,7 @@ def seed_database():
             description="The lives of two mob hitmen, a boxer, a gangster and his wife intertwine in four tales of violence and redemption.",
             launch_date=date(1994, 10, 14),
             nationality="USA",
-            poster_path="https://posters.movieposterdb.com/25_11/1994/110912/s_pulp-fiction-movie-poster_f099050c.jpg",
+            poster_path="https://posters.movieposterdb.com/25_11/1994/110912/l_pulp-fiction-movie-poster_f099050c.jpg",
             genres=[thriller, drama],
             directors=[tarantino],
             cast_members=[travolta]
@@ -195,7 +195,7 @@ def seed_database():
             description="A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
             launch_date=date(2014, 11, 7),
             nationality="USA",
-            poster_path="https://posters.movieposterdb.com/14_09/2014/816692/l_816692_593eaeff.jpg",
+            poster_path="https://posters.movieposterdb.com/14_09/2014/816692/s_816692_593eaeff.jpg",
             genres=[scifi, drama],
             directors=[nolan],
             cast_members=[matthew_mcconaughey]
@@ -206,7 +206,7 @@ def seed_database():
             description="When the menace known as the Joker wreaks havoc on Gotham, Batman must accept one of the greatest tests to fight injustice.",
             launch_date=date(2008, 7, 18),
             nationality="USA",
-            poster_path="https://posters.movieposterdb.com/24_06/2008/468569/l_the-dark-knight-movie-poster_96214dbd.jpg",
+            poster_path="https://posters.movieposterdb.com/22_10/2013/11060882/s_batman-the-dark-knight-returns-movie-poster_ac145b01.jpg",
             genres=[action, thriller, drama],
             directors=[nolan],
             cast_members=[christian_bale]
@@ -322,7 +322,137 @@ def seed_database():
             cast_members=[tom_hanks]
         )
 
-                # Create Test Users
+        fight_club = Movie(
+            name="Fight Club",
+            description="An insomniac office worker and a soap maker form an underground fight club that evolves into something much more dangerous.",
+            launch_date=date(1999, 10, 15),
+            nationality="USA",
+            poster_path="https://posters.movieposterdb.com/05_02/1999/0137523/s_7868_0137523_d46e33b9.jpg",
+            genres=[drama, thriller],
+            directors=[nolan],
+            cast_members=[dicaprio],
+            avg_rating=4.0,
+            count_rating=2
+        )
+
+        shawshank = Movie(
+            name="The Shawshank Redemption",
+            description="Two imprisoned men bond over several years, finding solace and eventual redemption through acts of common decency.",
+            launch_date=date(1994, 9, 23),
+            nationality="USA",
+            poster_path="https://posters.movieposterdb.com/11_08/1994/111161/s_111161_e9ccda65.jpg",
+            genres=[drama],
+            directors=[tarantino],
+            cast_members=[],
+            avg_rating=4.0,
+            count_rating=2
+        )
+
+        mad_max = Movie(
+            name="Mad Max: Fury Road",
+            description="In a post-apocalyptic wasteland, a drifter and a rebel warrior join forces to escape a tyrannical warlord.",
+            launch_date=date(2015, 5, 15),
+            nationality="Australia",
+            poster_path="https://posters.movieposterdb.com/06_05/1979/0079501/s_115184_0079501_5624763d.jpg",
+            genres=[action, thriller],
+            directors=[wachowski_lana],
+            cast_members=[],
+            avg_rating=4.0,
+            count_rating=2
+        )
+
+        gladiator = Movie(
+            name="Gladiator",
+            description="A betrayed Roman general fights his way through the arena seeking vengeance against the corrupt emperor who murdered his family.",
+            launch_date=date(2000, 5, 5),
+            nationality="USA",
+            poster_path="https://posters.movieposterdb.com/08_08/2000/172495/s_172495_2cce6a7c.jpg",
+            genres=[action, drama],
+            directors=[nolan],
+            cast_members=[],
+            avg_rating=4.0,
+            count_rating=2
+        )
+
+        shutter_island = Movie(
+            name="Shutter Island",
+            description="A U.S. Marshal investigates the disappearance of a murderer from a hospital for the criminally insane.",
+            launch_date=date(2010, 2, 19),
+            nationality="USA",
+            poster_path="https://posters.movieposterdb.com/09_08/2009/1130884/s_1130884_84200ccd.jpg",
+            genres=[thriller, drama],
+            directors=[nolan],
+            cast_members=[dicaprio],
+            avg_rating=4.0,
+            count_rating=2
+        )
+
+        john_wick = Movie(
+            name="John Wick",
+            description="An ex-hitman comes out of retirement to hunt down the gangsters who destroyed everything he had.",
+            launch_date=date(2014, 10, 24),
+            nationality="USA",
+            poster_path="https://posters.movieposterdb.com/14_10/2014/2911666/s_2911666_2ba3e7a9.jpg",
+            genres=[action, thriller],
+            directors=[wachowski_lilly],
+            cast_members=[reeves],
+            avg_rating=4.0,
+            count_rating=2
+        )
+
+        the_prestige = Movie(
+            name="The Prestige",
+            description="Two rival magicians engage in a battle to create the ultimate illusion, pushing the limits of obsession and sacrifice.",
+            launch_date=date(2006, 10, 20),
+            nationality="USA",
+            poster_path="https://posters.movieposterdb.com/06_11/2006/0482571/s_146373_0482571_5b8813d5.jpg",
+            genres=[thriller, drama],
+            directors=[nolan],
+            cast_members=[],
+            avg_rating=4.0,
+            count_rating=2
+        )
+
+        django = Movie(
+            name="Django Unchained",
+            description="A freed slave teams up with a bounty hunter to rescue his wife from a brutal plantation owner.",
+            launch_date=date(2012, 12, 25),
+            nationality="USA",
+            poster_path="https://www.impawards.com/2012/django_unchained_ver8_xlg.jpg",
+            genres=[action, drama],
+            directors=[tarantino],
+            cast_members=[travolta],
+            avg_rating=4.0,
+            count_rating=2
+        )
+
+        arrival = Movie(
+            name="Arrival",
+            description="A linguist is recruited to communicate with extraterrestrial visitors, uncovering a mystery that transcends time.",
+            launch_date=date(2016, 11, 11),
+            nationality="USA",
+            poster_path="https://posters.movieposterdb.com/14_02/2013/3404240/s_3404240_8c5a4155.jpg",
+            genres=[scifi, drama],
+            directors=[nolan],
+            cast_members=[],
+            avg_rating=4.0,
+            count_rating=2
+        )
+
+        blade_runner = Movie(
+            name="Blade Runner 2049",
+            description="A young blade runner discovers a long-buried secret that threatens to plunge what's left of society into chaos.",
+            launch_date=date(2017, 10, 6),
+            nationality="USA",
+            poster_path="https://posters.movieposterdb.com/22_11/1997/126817/s_blade-runner-movie-poster_144d650e.jpg",
+            genres=[scifi, thriller],
+            directors=[wachowski_lana],
+            cast_members=[],
+            avg_rating=4.0,
+            count_rating=2
+        )
+
+        # Create Test Users
         user1 = User(
             username="alice",
             email="alice@example.com",
@@ -343,14 +473,9 @@ def seed_database():
         )
 
         db.add_all([user1, user2, user3])
-        db.commit()
         print("Added users")
 
-        
-        db.add_all([inception, matrix, pulp_fiction, interstellar, dark_knight, 
-                    shawshank, forrest_gump, fight_club, dune, lotr_fellowship,
-                    goodfellas, schindlers_list, django, se7en, saving_private_ryan])
-        db.commit()
+        db.add_all([inception, matrix, pulp_fiction, interstellar, dark_knight, fight_club, shawshank, mad_max, gladiator, shutter_island, john_wick, the_prestige, django, arrival, blade_runner, dune, lotr_fellowship, forrest_gump, goodfellas, schindlers_list, se7en, saving_private_ryan])
         print("Added movies")
         
         # Create Ratings (evaluation must be 1-4)

@@ -1,5 +1,5 @@
 import { ChevronUp, ChevronDown } from "lucide-react";
-import type { Movie } from "../pages/browsePage";
+import type { RatedMovie } from "../pages/ratingsPage";
 
 type SortKey = "title" | "rating";
 type SortOrder = "asc" | "desc";
@@ -12,11 +12,11 @@ export default function MovieTable({
   onRatingChange,
   onRemove,
 }: {
-  movies: Movie[];
+  movies: RatedMovie[];
   sortKey: SortKey;
   sortOrder: SortOrder;
   onSort: (key: SortKey) => void;
-  onRatingChange: (id: number, rating: string) => void;
+  onRatingChange: (ratingId: number, newRating: number) => void;
   onRemove: (id: number) => void;
 }) {
   const renderSortIcon = (key: SortKey) => {
@@ -61,18 +61,20 @@ export default function MovieTable({
             >
               <td className="px-4 py-2">
                 <img
-                  src={movie.image}
-                  alt={movie.title}
+                  src={movie.movie.poster_path}
+                  alt={movie.movie.name}
                   className="w-20 h-30 object-cover rounded"
                 />
               </td>
 
-              <td className="px-4 py-2">{movie.title}</td>
+              <td className="px-4 py-2">{movie.movie.name}</td>
 
               <td className="px-4 py-2">
                 <select
-                  value={movie.rating}
-                  onChange={(e) => onRatingChange(movie.id, e.target.value)}
+                  value={movie.evaluation}
+                  onChange={(e) =>
+                    onRatingChange(movie.id, Number(e.target.value))
+                  }
                   className="bg-gray-800/40 text-white px-1 py-1 rounded w-fit
                   transition ease-in-out duration-200 hover:bg-gray-800/70 cursor-pointer
                   focus:outline-none"
@@ -89,7 +91,7 @@ export default function MovieTable({
               <td className="px-4 py-2">
                 <button
                   onClick={() => onRemove(movie.id)}
-                  className="bg-red-600 px-3 py-1 rounded hover:bg-red-800 transition"
+                  className="bg-red-600 px-3 py-1 rounded cursor-pointer hover:bg-red-800 transition"
                 >
                   Remove
                 </button>

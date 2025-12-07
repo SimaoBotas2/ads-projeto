@@ -16,5 +16,5 @@ class Rating(Base):
     movie = relationship("Movie", back_populates="ratings")
     
     __table_args__ = (
-        CheckConstraint('evaluation >= 1 AND evaluation <= 5', name='evaluation_check'),
+        CheckConstraint('evaluation >= 0 AND evaluation <= 5', name='evaluation'),
     )
