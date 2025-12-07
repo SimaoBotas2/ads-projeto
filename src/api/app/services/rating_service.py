@@ -37,6 +37,10 @@ class RatingService:
         updated = self.repository.update(rating_id, rating_update)
         return RatingResponse.model_validate(updated) if updated else None
 
+    def get_user_rating_for_movie(self, user_id: int, movie_id: int):
+        return self.repository.get_user_movie_rating(user_id, movie_id)
+
+
     def delete_rating(self, rating_id: int, user_id: int) -> bool:
         """Delete rating (only if owned by user)"""
         existing = self.repository.get_by_id(rating_id)

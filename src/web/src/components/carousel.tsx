@@ -54,7 +54,7 @@ export default function RecommendationsCarousel({
             key={idx}
             className="hover:cursor-pointer active:cursor-grabbing"
           >
-            <MovieCard {...item} />
+            <MovieCard item={item} onClick={item.onClick} />
           </SwiperSlide>
         ))}
       </Swiper>

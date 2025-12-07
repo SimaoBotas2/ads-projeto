@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
+from ..utils.dependencies import get_current_user
 from ..database import get_db
 from ..services.cast_service import CastService
 from ..schemas.cast import (
@@ -15,7 +16,8 @@ from ..schemas.cast import (
 
 router = APIRouter(
     prefix="/cast",
-    tags=["cast"]
+    tags=["cast"],
+    dependencies=[Depends(get_current_user)]
 )
 
 

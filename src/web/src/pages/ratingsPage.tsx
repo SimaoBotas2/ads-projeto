@@ -1,70 +1,93 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
 import type { Movie } from "./browsePage";
 import MovieTable from "../components/movieTable";
+import apiRequest from "../lib/apiRequest";
 
 type SortKey = "title" | "rating";
 type SortOrder = "asc" | "desc";
 
-export default function WishlistPage() {
-  const [movies, setMovies] = useState<Movie[]>([
-    {
-      id: 1,
-      title: "The Matrix",
-      image: "https://m.media-amazon.com/images/I/51EG732BV3L.jpg",
-      rating: "2",
-    },
-    {
-      id: 2,
-      title: "Pulp Fiction",
-      image: "https://m.media-amazon.com/images/I/71c05lTE03L._AC_SY679_.jpg",
-      rating: "3",
-    },
-    {
-      id: 3,
-      title: "Interstellar",
-      image: "https://m.media-amazon.com/images/I/91kFYg4fX3L._SL1500_.jpg",
-      rating: "4",
-    },
-  ]);
+export interface RatedMovie extends Movie {
+  evaluation: number;
+  movie: Movie;
+}
 
+export default function RatingsPage() {
+  const [movies, setMovies] = useState<RatedMovie[]>([]);
   const [sortKey, setSortKey] = useState<SortKey>("title");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const token = localStorage.getItem("token") || "";
 
-  const handleRemove = (id: number) => {
-    setMovies((prev) => prev.filter((movie) => movie.id !== id));
+  const loadRatings = async () => {
+    if (!user || !user.id) return;
+
+    try {
+      const response = await apiRequest.get(`/ratings/user/${user.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setMovies(response.data);
+    } catch (error) {
+      console.error("Error fetching ratings:", error);
+    }
   };
 
-  const handleRatingChange = (id: number, newRating: string) => {
-    setMovies((prev) =>
-      prev
-        .map((movie) =>
-          movie.id === id ? { ...movie, rating: newRating } : movie
-        )
-        .filter((movie) => movie.rating !== "0")
-    );
+  const handleRemove = async (ratingId: number) => {
+    try {
+      await apiRequest.delete(`/ratings`, {
+        params: { user_id: user.id, rating_id: ratingId },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      await loadRatings();
+    } catch (error) {
+      console.error("Error removing rating:", error);
+    }
   };
 
-  const handleSort = (key: SortKey) => {
-    if (sortKey === key) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortKey(key);
-      setSortOrder("asc");
+  const handleUpdateRating = async (ratingId: number, newRating: number) => {
+    try {
+      if (newRating === 0) {
+        handleRemove(ratingId);
+        return;
+      }
+
+      await apiRequest.put(
+        `/ratings`,
+        { evaluation: newRating },
+        {
+          params: { user_id: user.id, rating_id: ratingId },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      await loadRatings();
+    } catch (error) {
+      console.error("Error updating rating:", error);
     }
   };
 
   const sortedWishlist = [...movies].sort((a, b) => {
     if (sortKey === "title") {
       return sortOrder === "asc"
-        ? a.title.localeCompare(b.title)
-        : b.title.localeCompare(a.title);
-    } else {
-      return sortOrder === "asc"
-        ? parseInt(a.rating) - parseInt(b.rating)
-        : parseInt(b.rating) - parseInt(a.rating);
+        ? a.movie.name.localeCompare(b.movie.name)
+        : b.movie.name.localeCompare(a.movie.name);
     }
+
+    return sortOrder === "asc"
+      ? a.evaluation - b.evaluation
+      : b.evaluation - a.evaluation;
   });
+
+  useEffect(() => {
+    loadRatings();
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-[#121212] text-white">
@@ -77,8 +100,11 @@ export default function WishlistPage() {
           movies={sortedWishlist}
           sortKey={sortKey}
           sortOrder={sortOrder}
-          onSort={handleSort}
-          onRatingChange={handleRatingChange}
+          onSort={(key) => {
+            setSortKey(key);
+            setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+          }}
+          onRatingChange={handleUpdateRating}
           onRemove={handleRemove}
         />
       </section>

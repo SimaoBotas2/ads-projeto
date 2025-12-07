@@ -5,10 +5,12 @@ from typing import List
 from ..database import get_db
 from ..services.genre_service import GenreService
 from ..schemas.genre import GenreCreate, GenreUpdate, GenreResponse
+from ..utils.dependencies import get_current_user
 
 router = APIRouter(
     prefix="/genres",
-    tags=["genres"]
+    tags=["genres"],
+    dependencies=[Depends(get_current_user)]
 )
 
 

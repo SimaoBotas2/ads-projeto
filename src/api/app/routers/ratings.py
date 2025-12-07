@@ -4,10 +4,12 @@ from typing import List
 from ..database import get_db
 from ..services.rating_service import RatingService
 from ..schemas.rating import RatingCreate, RatingUpdate, RatingResponse
+from ..utils.dependencies import get_current_user
 
 router = APIRouter(
     prefix="/ratings",
-    tags=["ratings"]
+    tags=["ratings"],
+    dependencies=[Depends(get_current_user)]
 )
 
 
@@ -58,3 +60,20 @@ def delete_rating(rating_id: int, user_id: int, db: Session = Depends(get_db)):
             detail="Rating not found or unauthorized"
         )
     return None
+
+@router.get("/{movie_id}", response_model=RatingResponse)
+def get_rating_for_user_and_movie(
+    movie_id: int,
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    service = RatingService(db)
+    rating = service.get_user_rating_for_movie(user_id, movie_id)
+
+    if not rating:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Rating not found for this user/movie"
+        )
+
+    return rating
