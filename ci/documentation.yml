@@ -32,7 +32,7 @@ generate_react_documentation_frontend:
 generate_mkdocs_documentation:
   stage: documentation
   image: 
-    name: python:3.13
+    name: python:3.13-slim
     pull_policy: if-not-present
   before_script:
     - pip install --upgrade pip
