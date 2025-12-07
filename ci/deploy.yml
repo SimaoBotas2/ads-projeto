@@ -13,5 +13,3 @@ deploy:
     - docker ps
     - echo "You can access the web application at http://{$GCLOUD_IP}"
     - echo "You can access the API at http://{$GCLOUD_IP}/api"
-  tags:
-    - deploy

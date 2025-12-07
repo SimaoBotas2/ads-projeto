@@ -9,8 +9,15 @@ build:
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   script:
-    - echo "Building and pushing image - $IMAGE_NAME"
+    - echo "Building image - $IMAGE_NAME"
     - docker build -t $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest ${CONTEXT_PATH}
+    - echo "Pushing image - $IMAGE_NAME"
     - docker push $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest
-  tags:
-    - deploy
+    - echo "Saving artifact for image - $IMAGE_NAME"
+    - docker save -o ${IMAGE_NAME}-image.tar $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest
+    - echo "Removing local image - $IMAGE_NAME to free space"
+    - docker rmi $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest
+  artifacts:
+    paths:
+      - "*-image.tar"
+    expire_in: 1 week
