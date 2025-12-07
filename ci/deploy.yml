@@ -7,7 +7,8 @@ deploy:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   script:
     - cd ci
-    - docker compose -f docker-compose.yml up -d --build --force-recreate
+    - docker compose -f docker-compose.yml down
+    - docker compose -f docker-compose.yml up -d --build
     - echo "Deployment completed successfully."
     - echo "Deployed services:"
     - docker ps
