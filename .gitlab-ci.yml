@@ -1,6 +1,7 @@
 default:
-  image: python:3.13
-
+  image: 
+    name: python:3.13-slim
+    pull_policy: if-not-present
 workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
@@ -20,3 +21,9 @@ include:
   - local: '/ci/unit_test.yml'
   - local: '/ci/build.yml'
   - local: '/ci/documentation.yml'
+  - local: '/ci/deploy.yml'
+
+cache:
+  key: ${CI_PROJECT_ID}-pip
+  paths:
+    - .cache/pip/

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .database import engine, Base
+from .config import settings
 from .routers import (
     movies_router,
     users_router,
@@ -11,12 +11,8 @@ from .routers import (
     recommendations_router,
 )
 
-# Create database tables
-import os
-import sys
-# Avoid DB initialization when generating docs (e.g., with pdoc) or running pytest
-if not os.environ.get("DOCS_MODE") and "pytest" not in sys.modules:
-    Base.metadata.create_all(bind=engine)
+# Database schema is managed by Alembic migrations.
+# Run 'alembic upgrade head' before starting the application.
 
 app = FastAPI(
     title="Movie Recommendation API",
@@ -27,7 +23,7 @@ app = FastAPI(
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=settings.get_cors_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

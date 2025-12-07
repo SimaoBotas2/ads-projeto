@@ -15,7 +15,7 @@ erDiagram
     DIRECTOR {
         int id PK
         varchar name "NOT NULL, 512 chars"
-        text nacionality "512 chars"
+        text nationality "512 chars"
     }
     
     GENRE {
@@ -26,7 +26,7 @@ erDiagram
     CAST {
         int id PK
         varchar name "NOT NULL, 512 chars"
-        text nacionality "512 chars"
+        text nationality "512 chars"
     }
     
     RATING {

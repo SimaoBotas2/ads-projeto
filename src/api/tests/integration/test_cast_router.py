@@ -19,17 +19,17 @@ class TestCastRouter:
         assert data["name"] == "Leonardo DiCaprio"
         assert "id" in data
 
-    def test_create_cast_with_nacionality(self, client):
+    def test_create_cast_with_nationality(self, client):
         """Test creating a cast member with all available fields"""
         cast_data = {
             "name": "Tom Hanks",
-            "nacionality": "American"
+            "nationality": "American"
         }
         response = client.post("/cast/", json=cast_data)
         assert response.status_code == 201
         data = response.json()
         assert data["name"] == "Tom Hanks"
-        assert data["nacionality"] == "American"
+        assert data["nationality"] == "American"
 
     def test_get_all_cast(self, client):
         """Test getting all cast members"""
@@ -62,11 +62,11 @@ class TestCastRouter:
         create_response = client.post("/cast/", json={"name": "Julia Roberts"})
         cast_id = create_response.json()["id"]
         
-        update_data = {"name": "Julia Roberts", "nacionality": "American"}
+        update_data = {"name": "Julia Roberts", "nationality": "American"}
         response = client.put(f"/cast/{cast_id}", json=update_data)
         assert response.status_code == 200
         data = response.json()
-        assert data["nacionality"] == "American"
+        assert data["nationality"] == "American"
 
     def test_delete_cast(self, client):
         """Test deleting a cast member"""

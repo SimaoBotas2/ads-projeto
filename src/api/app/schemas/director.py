@@ -4,7 +4,7 @@ from typing import Optional
 
 class DirectorBase(BaseModel):
     name: str
-    nacionality: Optional[str] = Field(None, max_length=512)
+    nationality: Optional[str] = Field(None, max_length=512)
 
 
 class DirectorCreate(DirectorBase):
@@ -13,7 +13,7 @@ class DirectorCreate(DirectorBase):
 
 class DirectorUpdate(BaseModel):
     name: Optional[str] = None
-    nacionality: Optional[str] = Field(None, max_length=512)
+    nationality: Optional[str] = Field(None, max_length=512)
 
 
 class DirectorResponse(DirectorBase):

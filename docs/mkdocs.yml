@@ -52,13 +52,10 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Documentation:
-    - Project Overview: PROJECT_OVERVIEW.md
-    - Quick Reference: QUICK_REFERENCE.md
-    - Implementation Examples: IMPLEMENTATION_EXAMPLES.md
-    - Setup Guide: SETUP_COMPLETE.md
   - Architecture:
     - Architecture Diagrams: ARCH/architecture_diagrams.md
+  - CI/CD:
+    - Pipeline Overview: CI_CD/pipeline.md
   - Entity Relationship:
     - Conceptual Diagram: ER/conceptual_diagram.md
   - API Documentation:

@@ -3,11 +3,11 @@ Seed script to add test movies to the database
 Run with: python seed_data.py
 """
 from datetime import date
-from sqlalchemy import insert
 import hashlib
 import os
-from app.database import SessionLocal, engine, Base
-from app.models.movie import Movie, movie_cast
+import sys
+from app.database import SessionLocal
+from app.models.movie import Movie
 from app.models.genre import Genre
 from app.models.director import Director
 from app.models.cast import Cast
@@ -22,24 +22,29 @@ def hash_password(password: str) -> str:
     hash_hex = hashlib.sha256(salt + password.encode()).hexdigest()
     return f"{salt_hex}:{hash_hex}"
 
-
-# Create tables
-Base.metadata.create_all(bind=engine)
+# NOTE: Do NOT drop or create tables here. Use alembic migrations to manage schema.
+print("Seeding script started. Ensure migrations have already been applied (alembic upgrade head).")
 
 def seed_database():
     db = SessionLocal()
     
     try:
+        # If there is already movie data, assume DB has been seeded/migrated and skip.
+        existing = db.query(Movie).first()
+        if existing:
+            print("Database already contains data; skipping seeding.")
+            return
+
         # Delete existing data
         print("Cleaning up existing data...")
         db.query(Rating).delete()
-        db.query(Movie).delete()
         db.query(User).delete()
+        db.query(Movie).delete()
         db.query(Cast).delete()
         db.query(Director).delete()
         db.query(Genre).delete()
         db.commit()
-        print("Deleted existing data")
+        print("✓ Cleaned up existing data")
         
         print("Seeding database with test data...")
         
@@ -51,7 +56,7 @@ def seed_database():
         
         db.add_all([action, scifi, drama, thriller])
         db.commit()
-        print("Added genres")
+        print("✓ Added genres")
         
         # Create Directors
         nolan = Director(
@@ -98,7 +103,7 @@ def seed_database():
         db.add_all([nolan, wachowski_lana, wachowski_lilly, tarantino, spielberg, 
                     fincher, villeneuve, zemeckis, jackson, scorsese])
         db.commit()
-        print("Added directors")
+        print("✓ Added directors")
         
         # Create Cast Members
         dicaprio = Cast(
@@ -130,7 +135,7 @@ def seed_database():
             nationality="American"
         )
         timothee_chalamet = Cast(
-            name="TimothÃ©e Chalamet",
+            name="Timothée Chalamet",
             nationality="American"
         )
         elijah_wood = Cast(
@@ -154,7 +159,7 @@ def seed_database():
                     brad_pitt, timothee_chalamet, elijah_wood, robert_deniro,
                     matthew_mcconaughey, christian_bale])
         db.commit()
-        print("Added cast members")
+        print("✓ Added cast members")
         
         # Create Movies
         inception = Movie(
@@ -473,10 +478,12 @@ def seed_database():
         )
 
         db.add_all([user1, user2, user3])
-        print("Added users")
+        db.commit()
+        print("✓ Added users")
 
         db.add_all([inception, matrix, pulp_fiction, interstellar, dark_knight, fight_club, shawshank, mad_max, gladiator, shutter_island, john_wick, the_prestige, django, arrival, blade_runner, dune, lotr_fellowship, forrest_gump, goodfellas, schindlers_list, se7en, saving_private_ryan])
-        print("Added movies")
+        db.commit()
+        print("✓ Added movies")
         
         # Create Ratings (evaluation must be 1-4)
         ratings = [
@@ -535,16 +542,19 @@ def seed_database():
         print(f"   - 10 directors")
         print(f"   - 12 cast members")
         print(f"   - 3 users")
-        print(f"   - 15 movies")
+        print(f"   - 22 movies")
         print(f"   - {len(ratings)} ratings")
-        print(f"\nYou can now test the API at http://localhost:5000/docs")
+        print(f"\n🎬 You can now test the API at http://localhost:5005/docs")
+        print(f"📊 Test users: alice, bob, charlie (password: password123)")
         
     except Exception as e:
-        print(f"Error seeding database: {e}")
+        print(f"❌ Error seeding database: {e}")
         db.rollback()
+        sys.exit(1)
     finally:
         db.close()
 
 
 if __name__ == "__main__":
     seed_database()
+    print("Seeding finished.")

@@ -1,6 +1,5 @@
 generate_python_documentation_api:
   stage: documentation
-  image: python:3.13
   variables:
     DOCS_MODE: "1"
   before_script:
@@ -17,7 +16,9 @@ generate_python_documentation_api:
 
 generate_react_documentation_frontend:
   stage: documentation
-  image: node:20
+  image:
+    name: node:20
+    pull_policy: if-not-present
   before_script:
     - npm install --prefix ./src/web
     - npm install --prefix ./src/web --save-dev typedoc
@@ -30,7 +31,9 @@ generate_react_documentation_frontend:
 
 generate_mkdocs_documentation:
   stage: documentation
-  image: python:3.13
+  image: 
+    name: python:3.13-slim
+    pull_policy: if-not-present
   before_script:
     - pip install --upgrade pip
     - pip install mkdocs mkdocs-material mkdocstrings pymdown-extensions mkdocs-mermaid2-plugin

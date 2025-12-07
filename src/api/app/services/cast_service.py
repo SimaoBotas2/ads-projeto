@@ -59,7 +59,7 @@ class CastService:
             CastWithCharacterResponse(
                 id=cast.id,
                 name=cast.name,
-                nacionality=cast.nacionality
+                nationality=cast.nationality
             )
             for row in results
             if (cast := self.repository.get_by_id(row.cast_id)) is not None

@@ -1,7 +1,11 @@
 import axios from "axios";
 
+const getApiUrl = () => {
+  return window.APP_CONFIG?.API_URL || "http://localhost:5005";
+};
+
 const apiRequest = axios.create({
-  baseURL: "http://localhost:5005/",
+  baseURL: getApiUrl(),
   withCredentials: true,
 });
 

@@ -4,7 +4,7 @@ from typing import Optional
 
 class CastBase(BaseModel):
     name: str = Field(..., max_length=512)
-    nacionality: Optional[str] = Field(None, max_length=512)
+    nationality: Optional[str] = Field(None, max_length=512)
 
 
 class CastCreate(CastBase):
@@ -13,7 +13,7 @@ class CastCreate(CastBase):
 
 class CastUpdate(BaseModel):
     name: Optional[str] = Field(None, max_length=512)
-    nacionality: Optional[str] = Field(None, max_length=512)
+    nationality: Optional[str] = Field(None, max_length=512)
 
 
 class CastResponse(CastBase):
@@ -36,7 +36,7 @@ class CastWithCharacterResponse(BaseModel):
     """Cast member for a specific movie"""
     id: int
     name: str
-    nacionality: Optional[str] = None
+    nationality: Optional[str] = None
     
     model_config = {"from_attributes": True}
 
