@@ -54,6 +54,8 @@ nav:
   - Home: index.md
   - Architecture:
     - Architecture Diagrams: ARCH/architecture_diagrams.md
+  - CI/CD:
+    - Pipeline Overview: CI_CD/pipeline.md
   - Entity Relationship:
     - Conceptual Diagram: ER/conceptual_diagram.md
   - API Documentation:
