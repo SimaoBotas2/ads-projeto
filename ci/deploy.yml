@@ -7,7 +7,7 @@ deploy:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   script:
     - export PUBLIC_IP=$(curl -s ifconfig.me || curl -s icanhazip.com || echo "localhost")
-    - echo "Public IP detected: $PUBLIC_IP"
+    - echo "Public IP detected:$PUBLIC_IP"
     - export API_URL="http://$PUBLIC_IP:5005"
     - export CORS_ORIGINS="http://$PUBLIC_IP,http://$PUBLIC_IP:80,http://localhost,http://localhost:5173"
     - echo "API_URL=$API_URL"
@@ -20,6 +20,5 @@ deploy:
     - docker ps
     - echo "You can access the web application at http://$PUBLIC_IP"
     - echo "You can access the API at http://$PUBLIC_IP:5005"
-  
   tags:
     - shell
