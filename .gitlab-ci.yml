@@ -8,7 +8,6 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     # only for test CI/CD pipeline on CI/CD pipeline branch
     - if: $CI_COMMIT_BRANCH == "main"
-    - if: $CI_COMMIT_BRANCH == "15-deployments"
     
 
 stages:
