@@ -21,3 +21,5 @@ build:
     paths:
       - "*-image.tar"
     expire_in: 1 week
+  tags:
+    - shell
