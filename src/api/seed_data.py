@@ -36,11 +36,15 @@ def seed_database():
             return
 
         # Delete existing data
-        print("Cleaning up any partial data (ratings only)...")
-        # Only remove ratings to avoid destructive operations in production
+        print("Cleaning up existing data...")
         db.query(Rating).delete()
+        db.query(User).delete()
+        db.query(Movie).delete()
+        db.query(Cast).delete()
+        db.query(Director).delete()
+        db.query(Genre).delete()
         db.commit()
-        print("Deleted existing ratings")
+        print("✓ Cleaned up existing data")
         
         print("Seeding database with test data...")
         
@@ -52,7 +56,7 @@ def seed_database():
         
         db.add_all([action, scifi, drama, thriller])
         db.commit()
-        print("Added genres")
+        print("✓ Added genres")
         
         # Create Directors
         nolan = Director(
@@ -99,7 +103,7 @@ def seed_database():
         db.add_all([nolan, wachowski_lana, wachowski_lilly, tarantino, spielberg, 
                     fincher, villeneuve, zemeckis, jackson, scorsese])
         db.commit()
-        print("Added directors")
+        print("✓ Added directors")
         
         # Create Cast Members
         dicaprio = Cast(
@@ -131,7 +135,7 @@ def seed_database():
             nationality="American"
         )
         timothee_chalamet = Cast(
-            name="TimothÃ©e Chalamet",
+            name="Timothée Chalamet",
             nationality="American"
         )
         elijah_wood = Cast(
@@ -155,7 +159,7 @@ def seed_database():
                     brad_pitt, timothee_chalamet, elijah_wood, robert_deniro,
                     matthew_mcconaughey, christian_bale])
         db.commit()
-        print("Added cast members")
+        print("✓ Added cast members")
         
         # Create Movies
         inception = Movie(
@@ -475,11 +479,11 @@ def seed_database():
 
         db.add_all([user1, user2, user3])
         db.commit()
-        print("Added users")
+        print("✓ Added users")
 
         db.add_all([inception, matrix, pulp_fiction, interstellar, dark_knight, fight_club, shawshank, mad_max, gladiator, shutter_island, john_wick, the_prestige, django, arrival, blade_runner, dune, lotr_fellowship, forrest_gump, goodfellas, schindlers_list, se7en, saving_private_ryan])
         db.commit()
-        print("Added movies")
+        print("✓ Added movies")
         
         # Create Ratings (evaluation must be 1-4)
         ratings = [
@@ -538,12 +542,13 @@ def seed_database():
         print(f"   - 10 directors")
         print(f"   - 12 cast members")
         print(f"   - 3 users")
-        print(f"   - 15 movies")
+        print(f"   - 22 movies")
         print(f"   - {len(ratings)} ratings")
-        print(f"\nYou can now test the API at http://localhost:5000/docs")
+        print(f"\n🎬 You can now test the API at http://localhost:5005/docs")
+        print(f"📊 Test users: alice, bob, charlie (password: password123)")
         
     except Exception as e:
-        print(f"Error seeding database: {e}")
+        print(f"❌ Error seeding database: {e}")
         db.rollback()
         sys.exit(1)
     finally:
