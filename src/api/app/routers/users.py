@@ -39,7 +39,7 @@ def login_user(user_login: UserLogin, service: UserService = Depends(get_user_se
     access_token = create_access_token(
         data={"sub": str(user.id), "username": user.username}
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "user": user}
 
 
 # Get user profile

@@ -47,15 +47,19 @@ class MovieRepository:
             .subquery()
         )
 
-        # Order movies by genre average then movie average
+        # Order movies by genre average then movie average, excluding already rated
         q = (
             self.db.query(Movie)
             .join(Movie.genres)
             .join(genre_top_user, genre_top_user.c.genre_id == Genre.id)
-            .group_by(Movie.id)
+            .filter(~self.db.query(Rating).filter(
+                Rating.movie_id == Movie.id,
+                Rating.user_id == user_id
+            ).exists())
             .distinct(Movie.id)
             .order_by(
-                func.max(genre_top_user.c.genre_avg).desc(),
+                Movie.id,
+                genre_top_user.c.genre_avg.desc(),
                 Movie.avg_rating.desc()
             )
             .limit(movie_limit)
