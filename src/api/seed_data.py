@@ -474,9 +474,11 @@ def seed_database():
         )
 
         db.add_all([user1, user2, user3])
+        db.commit()
         print("Added users")
 
         db.add_all([inception, matrix, pulp_fiction, interstellar, dark_knight, fight_club, shawshank, mad_max, gladiator, shutter_island, john_wick, the_prestige, django, arrival, blade_runner, dune, lotr_fellowship, forrest_gump, goodfellas, schindlers_list, se7en, saving_private_ryan])
+        db.commit()
         print("Added movies")
         
         # Create Ratings (evaluation must be 1-4)
