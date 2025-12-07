@@ -1,6 +1,7 @@
 build:
   stage: build
   image: quay.io/buildah/stable:latest
+  pull_policy: if-not-present
   variables:
     BUILDAH_FORMAT: docker
     BUILDAH_ISOLATION: chroot

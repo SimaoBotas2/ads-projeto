@@ -15,6 +15,7 @@ static_analysis_api_pylint:
 
 static_analysis_web_prettier:
   image: node:20
+  pull_policy: if-not-present
   stage: static_analysis
   script:
     - npm install -g prettier
