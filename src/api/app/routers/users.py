@@ -4,7 +4,6 @@ from ..database import get_db
 from ..schemas.user import UserCreate, UserResponse, UserLogin, UserUpdate
 from ..services.user_service import UserService
 from ..utils.jwt_utils import create_access_token
-from fastapi.security import OAuth2PasswordRequestForm
 
 users_router = APIRouter(
     prefix="/users",
@@ -28,7 +27,7 @@ def register_user(user_create: UserCreate, service: UserService = Depends(get_us
 
 # Login user
 @users_router.post("/login")
-def login_user(user_login: OAuth2PasswordRequestForm = Depends(), service: UserService = Depends(get_user_service)):
+def login_user(user_login: UserLogin, service: UserService = Depends(get_user_service)):
     user = service.get_user_by_username(user_login.username)
     if not user or not service.verify_password(user_login.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid username or password")
