@@ -1,30 +1,16 @@
 build:
   stage: build
-  image: 
-    name: quay.io/buildah/stable:latest
-    pull_policy: if-not-present
-  variables:
-    BUILDAH_FORMAT: docker
-    BUILDAH_ISOLATION: chroot
-    STORAGE_DRIVER: vfs
   parallel:
-    # images to build
     matrix:
       - IMAGE_NAME: api
         CONTEXT_PATH: ./src/api
       - IMAGE_NAME: web
         CONTEXT_PATH: ./src/web
   before_script:
-    - buildah login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   script:
     - echo "Building and pushing image - $IMAGE_NAME"
-    - buildah bud -t $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest ${CONTEXT_PATH}
-    - buildah push $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest
-    - echo "Build and push completed for image - $IMAGE_NAME"
-    - echo "Generating artifact for image - $IMAGE_NAME"
-    - buildah push $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest docker-archive:${IMAGE_NAME}-image.tar
-  artifacts:
-    paths:
-      - "*-image.tar"
-    expire_in: 1 week
-
+    - docker build -t $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest ${CONTEXT_PATH}
+    - docker push $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest
+  tags:
+    - deploy
