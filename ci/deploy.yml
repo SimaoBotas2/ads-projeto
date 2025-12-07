@@ -22,3 +22,5 @@ deploy:
     - echo "You can access the API at http://$PUBLIC_IP:5005"
   tags:
     - shell
+  only:
+    - main
