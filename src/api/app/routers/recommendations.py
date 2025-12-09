@@ -20,3 +20,9 @@ router = APIRouter(
 def get_recommendations_by_genre(user_id: int, db: Session = Depends(get_db)):
     service = RecommendationService(db)
     return service.get_recommendations_by_genre(user_id)
+
+
+@router.get("/director", response_model=List[MovieResponse])
+def get_recommendations_by_director(user_id: int, db: Session = Depends(get_db)):
+    service = RecommendationService(db)
+    return service.get_recommendations_by_director(user_id)
