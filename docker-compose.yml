@@ -30,7 +30,7 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./app:/app/app
+      - ./src/api/app:/app/app
   web:
     build:
       context: src/web

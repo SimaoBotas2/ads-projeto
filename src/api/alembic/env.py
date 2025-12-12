@@ -2,11 +2,11 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
+
+# Ensure src/api is in sys.path for Alembic imports
 import sys
 import os
-
-# Add parent directory to path
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app.database import Base
 from app.models import User, Movie, Genre, Director, Cast, Rating

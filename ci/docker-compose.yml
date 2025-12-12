@@ -29,7 +29,7 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./app:/app/app
+      - ./src/api/app:/app/app
   web:
     image: registry.gitlab.com/botassimao/ads-projeto/web:latest
     pull_policy: always
