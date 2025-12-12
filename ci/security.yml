@@ -1,6 +1,5 @@
 container_scanning:
   image: docker.io/aquasec/trivy:latest
-  stage: security
   parallel:
     matrix:
       - IMAGE_NAME: api
@@ -14,11 +13,23 @@ container_scanning:
     TRIVY_CACHE_DIR: ".trivycache/"
     FULL_IMAGE_NAME: $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest
   script:
+    # Check Trivy version
     - trivy --version
+
+    # Login to the registry (optional but required for private images)
+    - trivy registry login --username "$TRIVY_USERNAME" --password "$TRIVY_PASSWORD" "$TRIVY_AUTH_URL"
+
+    # Update the vulnerability database
     - trivy image --download-db-only
+
+    # Generate a GitLab-specific JSON report
     - trivy image --exit-code 0 --format template --template "@/contrib/gitlab.tpl" \
         --output "$CI_PROJECT_DIR/gl-container-scanning-${IMAGE_NAME}.json" "$FULL_IMAGE_NAME"
+
+    # Display the full report in the console
     - trivy image --exit-code 0 "$FULL_IMAGE_NAME"
+
+    # Fail the job only if CRITICAL vulnerabilities are found
     - trivy image --exit-code 1 --severity CRITICAL "$FULL_IMAGE_NAME"
   cache:
     paths:
