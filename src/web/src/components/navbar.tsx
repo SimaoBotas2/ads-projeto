@@ -1,4 +1,4 @@
-import { User, Film } from "lucide-react";
+import { Film } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
@@ -30,14 +30,6 @@ export default function Navbar() {
           </li>
           <li>
             <Link
-              to="/wishlist"
-              className="text-[#F5F5F5] hover:text-[#03DAC6] transition-colors duration-300 ease-out font-bold"
-            >
-              Wishlist
-            </Link>
-          </li>
-          <li>
-            <Link
               to="/ratings"
               className="text-[#F5F5F5] hover:text-[#03DAC6] transition-colors duration-300 ease-out font-bold"
             >
@@ -48,8 +40,15 @@ export default function Navbar() {
       </nav>
 
       <div>
-        <Link to="/profile">
-          <User className="text-[#03DAC6] h-10 w-8 hover:text-[#00756ad2] transition-colors duration-300 ease-out" />
+        <Link to="/auth">
+          <button
+            onClick={() => {
+              localStorage.removeItem("currentUser");
+            }}
+            className="flex items-center space-x-2 bg-red-600 hover:bg-red-900 text-white font-bold py-2 px-4 rounded transition-colors duration-300 ease-out cursor-pointer"
+          >
+            Logout
+          </button>
         </Link>
       </div>
     </header>
