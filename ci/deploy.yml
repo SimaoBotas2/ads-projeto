@@ -14,7 +14,7 @@ deploy:
     - echo "CORS_ORIGINS=$CORS_ORIGINS"
     - cd ci
     - docker compose -f docker-compose.yml -p traditional down
-    - docker compose -f docker-compose.yml +p traditional up -d --build
+    - docker compose -f docker-compose.yml -p traditional up -d --build
     - echo "Deployment completed successfully."
     - echo "Deployed services:"
     - docker ps
