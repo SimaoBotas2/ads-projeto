@@ -11,8 +11,6 @@ static_analysis_api_pylint:
       - src/api/pylint-report.txt
     expire_in: 1 week
   allow_failure: true
-  # artifacts removidos pois pylint não gera arquivos por padrão
-
 static_analysis_web_prettier:
   image: 
     name: node:20

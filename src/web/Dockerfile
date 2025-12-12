@@ -10,6 +10,11 @@ RUN npm run build
 # Production Stage
 FROM nginx:1.29.3-alpine
 
+# Update Alpine packages to fix security vulnerabilities
+RUN apk update && \
+    apk upgrade --no-cache && \
+    apk add --no-cache busybox>=1.37.0-r20 libpng>=1.6.53-r0
+
 # Copiar ficheiros do build para o NGINX
 COPY --from=build /app/dist /usr/share/nginx/html
 
