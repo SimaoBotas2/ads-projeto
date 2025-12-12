@@ -4,9 +4,6 @@ from .config import settings
 from .routers import (
     movies_router,
     users_router,
-    genres_router,
-    directors_router,
-    cast_router,
     ratings_router,
     recommendations_router,
 )
@@ -32,9 +29,6 @@ app.add_middleware(
 # Include routers
 app.include_router(movies_router)
 app.include_router(users_router)
-app.include_router(genres_router)
-app.include_router(directors_router)
-app.include_router(cast_router)
 app.include_router(ratings_router)
 app.include_router(recommendations_router)
 
