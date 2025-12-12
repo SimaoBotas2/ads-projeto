@@ -15,6 +15,8 @@ export default function MovieModal({
 }) {
   const [rating, setRating] = useState<number>(currentRating ?? 0);
 
+  console.log("Current Rating:", movie);
+
   useEffect(() => {
     setRating(currentRating ?? 0);
   }, [currentRating]);
@@ -26,6 +28,7 @@ export default function MovieModal({
     onClose();
   };
 
+  console.log("Rendering MovieModal for movie:", movie);
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50">
       <div className="bg-[#1E1E1E] rounded-2xl p-6 max-w-2xl w-full shadow-2xl border border-gray-700/40 overflow-y-auto max-h-[90vh]">

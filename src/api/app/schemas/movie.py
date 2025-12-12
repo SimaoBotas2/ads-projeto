@@ -65,6 +65,8 @@ class MovieList(BaseModel):
     name: str
     launch_date: Optional[date] = None
     poster_path: Optional[str] = None
+    avg_rating: Optional[float] = None
+    count_rating: int = 0
     
     model_config = {"from_attributes": True}
 

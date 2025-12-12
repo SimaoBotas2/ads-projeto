@@ -37,8 +37,12 @@ class RatingService:
         updated = self.repository.update(rating_id, rating_update)
         return RatingResponse.model_validate(updated) if updated else None
 
-    def get_user_rating_for_movie(self, user_id: int, movie_id: int):
-        return self.repository.get_user_movie_rating(user_id, movie_id)
+    def get_user_rating_for_movie(self, user_id: int, movie_id: int) -> Optional[RatingResponse]:
+        """Get user rating for specific movie"""
+        rating = self.repository.get_user_movie_rating(user_id, movie_id)
+        if not rating:
+            return None
+        return RatingResponse.model_validate(rating)
 
 
     def delete_rating(self, rating_id: int, user_id: int) -> bool:

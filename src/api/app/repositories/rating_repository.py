@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 from ..models.rating import Rating
 from ..schemas.rating import RatingCreate, RatingUpdate
@@ -27,6 +27,7 @@ class RatingRepository:
         """Get specific user rating for a movie"""
         return (
             self.db.query(Rating)
+            .options(joinedload(Rating.movie))
             .filter(Rating.user_id == user_id, Rating.movie_id == movie_id)
             .first()
         )

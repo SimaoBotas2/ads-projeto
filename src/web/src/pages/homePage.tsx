@@ -3,131 +3,83 @@ import RecommendationsCarousel from "../components/carousel";
 import Navbar from "../components/navbar";
 import SearchInput from "../components/searchInput";
 import MovieCard from "../components/movieCard";
-import apiRequest from "../lib/apiRequest";
 import type { Movie } from "./browsePage";
 import MovieModal from "../components/movieModal";
 import AuthModal from "../components/modal";
-
-interface Genre {
-  id: number;
-  name: string;
-  description: string;
-}
+import { useGenres } from "../hooks/useGenres";
+import { useMovieRecommendations } from "../hooks/useMovieRecommendations";
+import { useMovieRating } from "../hooks/useMovieRating";
 
 export default function HomePage() {
-  const [genres, setGenres] = useState<Genre[]>([]);
-  const [moviesSearched, setMoviesSearched] = useState<Movie[] | null>(null);
-  const [selectedGenre, setSelectedGenre] = useState<Genre | null>(null);
-  const [moviesByGenre, setMoviesByGenre] = useState<Movie[]>([]);
-  const [moviesRecommendationsForGenre, setMoviesRecommendationsForGenre] =
-    useState<Movie[]>([]);
-  const [currentRating, setCurrentRating] = useState<number | null>(null);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const token = localStorage.getItem("token") || "";
-
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const [moviesSearched, setMoviesSearched] = useState<Movie[] | null>(null);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
-  useEffect(() => {
-    if (!user || !user.id) return;
+  const { genres, selectedGenre, setSelectedGenre } = useGenres({
+    userId: user.id,
+    token,
+  });
 
-    const fetchGenres = async () => {
-      try {
-        const genres = await apiRequest.get(`genres`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setGenres(genres.data);
-      } catch (error) {
-        console.error("Error fetching ratings:", error);
-      }
-    };
+  const {
+    moviesByGenre,
+    recommendationsByGenre,
+    recommendationsByDirector,
+    recommendationsByCast,
+    fetchMoviesByGenre,
+    fetchAllRecommendations,
+    updateMovieInLists,
+  } = useMovieRecommendations({
+    userId: user.id,
+    token,
+  });
 
-    fetchGenres();
-  }, []);
-
-  useEffect(() => {
-    if (genres.length > 0) {
-      setSelectedGenre(genres[0]);
-      getMoviesRecommendationsForGenre(genres[0].id);
-    }
-  }, [genres]);
-
-  async function getMoviesRecommendationsForGenre(
-    genreId: number
-  ): Promise<Movie[]> {
-    if (!user || !user.id || !genreId) return [];
-    try {
-      const movieByGenre = await apiRequest.get(`movies/genre/${genreId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const recommendations = await apiRequest.get(`recommendations/genre`, {
-        params: { user_id: user.id},
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setMoviesByGenre(movieByGenre.data);
-      setMoviesRecommendationsForGenre(recommendations.data);
-      return recommendations.data;
-    } catch (error) {
-      console.error("Error fetching movies for genre:", error);
-      return [];
-    }
-  }
-
-  useEffect(() => {
-    if (!selectedMovie || !user?.id) return;
-
-    const fetchRating = async () => {
-      try {
-        const res = await apiRequest.get(`/ratings/${selectedMovie.id}`, {
-          params: { user_id: user.id },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+  const { currentRating, showConfirmModal, setShowConfirmModal, submitRating } =
+    useMovieRating({
+      movie: selectedMovie,
+      userId: user.id,
+      token,
+      onRatingSubmitted: (updatedMovie) => {
+        setSelectedMovie(updatedMovie);
+        updateMovieInLists(updatedMovie.id, {
+          avg_rating: updatedMovie.avg_rating,
+          count_rating: updatedMovie.count_rating,
         });
 
-        setCurrentRating(res.data?.evaluation || 0);
-      } catch (err) {
-        console.error("Error loading user rating:", err);
-        setCurrentRating(null);
-      }
-    };
-
-    fetchRating();
-  }, [selectedMovie]);
-
-  async function submitRating(evaluation: number) {
-    if (!selectedMovie || !user?.id) return;
-
-    try {
-      await apiRequest.post(
-        `/ratings`,
-        { evaluation, movie_id: selectedMovie.id },
-        {
-          params: { user_id: user.id },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        if (moviesSearched) {
+          setMoviesSearched(
+            (prev) =>
+              prev?.map((m) =>
+                m.id === updatedMovie.id
+                  ? {
+                      ...m,
+                      avg_rating: updatedMovie.avg_rating,
+                      count_rating: updatedMovie.count_rating,
+                    }
+                  : m
+              ) || null
+          );
         }
-      );
 
-      setShowConfirmModal(true);
-      setCurrentRating(evaluation);
-      refreshRecommendations();
-    } catch (err) {
-      console.error("Error submitting rating:", err);
-      setShowConfirmModal(true);
+        if (selectedGenre?.id) {
+          fetchAllRecommendations(selectedGenre.id);
+        }
+      },
+    });
+
+  useEffect(() => {
+    if (selectedGenre?.id) {
+      fetchAllRecommendations(selectedGenre.id);
     }
-  }
+  }, [selectedGenre, fetchAllRecommendations]);
 
-  const refreshRecommendations = async () => {
-    if (!selectedGenre?.id) return;
-    await getMoviesRecommendationsForGenre(selectedGenre.id);
+  const handleGenreChange = async (genreId: number) => {
+    const genre = genres.find((g) => g.id === genreId);
+    if (genre) {
+      setSelectedGenre(genre);
+      await fetchMoviesByGenre(genreId);
+    }
   };
 
   return (
@@ -150,8 +102,8 @@ export default function HomePage() {
       />
 
       {moviesSearched ? (
-        moviesSearched.map((movie) => (
-          <div className="flex justify-center items-start w-fit">
+        moviesSearched.map((movie, index) => (
+          <div key={index} className="flex justify-center items-start w-fit">
             <div className="p-6">
               <MovieCard item={movie} onClick={() => setSelectedMovie(movie)} />
             </div>
@@ -159,19 +111,31 @@ export default function HomePage() {
         ))
       ) : (
         <>
-          <RecommendationsCarousel
-            title="Recommended for you"
-            items={moviesByGenre.map((m) => ({
-              ...m,
-              onClick: () => setSelectedMovie(m),
-            }))}
-          />
+          {recommendationsByDirector.length > 0 && (
+            <RecommendationsCarousel
+              title="Recommended By Director"
+              items={recommendationsByDirector.map((m) => ({
+                ...m,
+                onClick: () => setSelectedMovie(m),
+              }))}
+            />
+          )}
 
-          {moviesRecommendationsForGenre.length > 0 && (
+          {recommendationsByCast.length > 0 && (
+            <RecommendationsCarousel
+              title="Recommended By Cast"
+              items={recommendationsByCast.map((m) => ({
+                ...m,
+                onClick: () => setSelectedMovie(m),
+              }))}
+            />
+          )}
+
+          {recommendationsByGenre.length > 0 && (
             <RecommendationsCarousel
               key={`recommendations-${selectedGenre?.id}`}
-              title={`Recommended Movies by Genre`}
-              items={moviesRecommendationsForGenre.map((m) => ({
+              title="Recommended Movies by Genre"
+              items={recommendationsByGenre.map((m) => ({
                 ...m,
                 onClick: () => setSelectedMovie(m),
               }))}
@@ -184,10 +148,7 @@ export default function HomePage() {
               {genres.map((genre) => (
                 <button
                   key={genre.id}
-                  onClick={() => {
-                    setSelectedGenre(genre);
-                    getMoviesRecommendationsForGenre(genre.id);
-                  }}
+                  onClick={() => handleGenreChange(genre.id)}
                   className={`cursor-pointer px-4 py-2 rounded-full transition-colors ${
                     selectedGenre?.id === genre.id
                       ? "bg-[#03DAC6] text-[#121212] font-bold"
