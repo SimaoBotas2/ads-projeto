@@ -17,14 +17,15 @@ Trivy_container_scanning:
     - trivy registry login --username "$CI_REGISTRY_USER" --password "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
     - echo "Scanning image - $IMAGE_NAME"
-    - trivy image --exit-code 1 --severity CRITICAL,HIGH --cache-dir .trivycache/ --no-progress --format json -o gl-container-scanning-${IMAGE_NAME}.json $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest
+    - mkdir -p security_reports
+    - trivy image --exit-code 1 --severity CRITICAL,HIGH --cache-dir .trivycache/ --no-progress --format json -o security_reports/${IMAGE_NAME}.json $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest
   cache:
     paths:
       - .trivycache/
   artifacts:
     reports:
-      container_scanning: gl-container-scanning-*.json
+      container_scanning: security_reports/${IMAGE_NAME}.json
     paths:
-      - gl-container-scanning-*.json
+      - security_reports/
     when: always
   dependencies: []
