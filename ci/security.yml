@@ -28,6 +28,3 @@ Trivy_container_scanning:
       - gl-container-scanning-*.json
     when: always
   dependencies: []
-  only:
-    refs:
-      - branches
