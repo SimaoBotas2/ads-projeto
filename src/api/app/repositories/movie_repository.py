@@ -1,10 +1,12 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import update, case, func
 from typing import List, Optional
+
+from ..models.director import Director
 from ..models.movie import Movie
-from ..schemas.movie import MovieCreate, MovieUpdate
 from ..models.genre import Genre
 from ..models.rating import Rating
+from ..models.cast import Cast
 
 
 class MovieRepository:
@@ -66,22 +68,85 @@ class MovieRepository:
         )
 
         return q.all()
+    
+    def get_top_movies_for_user_director(self, user_id: int, limit: int = 10) -> List[Movie]:
+        """Return top movies from directors of user's rated movies, ordered by average rating, excluding already rated."""
+        # Get directors of movies already rated by the user
+        user_director_ids = (
+            self.db.query(Director.id)
+            .join(Director.movies)
+            .join(Movie.ratings)
+            .filter(Rating.user_id == user_id)
+            .distinct()
+            .subquery()
+        )
 
-    
-    def create(self, movie: MovieCreate) -> Movie:
-        """Create a new movie"""
-        # TODO: Implement
-        pass
-    
-    def update(self, movie_id: int, movie_update: MovieUpdate) -> Optional[Movie]:
-        """Update movie"""
-        # TODO: Implement
-        pass
-    
-    def delete(self, movie_id: int) -> bool:
-        """Delete movie"""
-        # TODO: Implement
-        pass
+        # Get all movies from those directors with their average ratings (left join to include movies without ratings)
+        director_movies = (
+            self.db.query(
+                Movie.id.label("movie_id"),
+                func.avg(Rating.evaluation).label("director_avg"),
+            )
+            .join(Movie.directors)
+            .outerjoin(Movie.ratings)
+            .filter(Director.id.in_(user_director_ids))
+            .group_by(Movie.id)
+            .subquery()
+        )
+
+        # Order movies by director average then movie average, excluding already rated
+        q = (
+            self.db.query(Movie)
+            .join(director_movies, director_movies.c.movie_id == Movie.id)
+            .filter(~self.db.query(Rating).filter(
+                Rating.movie_id == Movie.id,
+                Rating.user_id == user_id
+            ).exists())
+            .order_by(
+                director_movies.c.director_avg.desc(),
+                Movie.avg_rating.desc()
+            )
+            .limit(limit)
+        )
+
+        return q.all()
+
+    def get_top_movies_for_user_cast(self, user_id: int, limit: int = 10) -> List[Movie]:
+        """Return top movies from cast of user's rated movies, ordered by average rating, excluding already rated."""
+        # Query to obtain top cast members for the user with their average ratings
+        cast_top_user = (
+            self.db.query(
+                Cast.id.label("cast_id"),
+                func.avg(Rating.evaluation).label("cast_avg"),
+            )
+            .join(Cast.movies)
+            .join(Movie.ratings)
+            .filter(Rating.user_id == user_id)
+            .group_by(Cast.id)
+            .order_by(func.avg(Rating.evaluation).desc())
+            .limit(limit)
+            .subquery()
+        )
+
+        # Order movies by cast average then movie average, excluding already rated
+        q = (
+            self.db.query(Movie)
+            .join(Movie.cast_members)
+            .join(cast_top_user, cast_top_user.c.cast_id == Cast.id)
+            .filter(~self.db.query(Rating).filter(
+                Rating.movie_id == Movie.id,
+                Rating.user_id == user_id
+            ).exists())
+            .distinct(Movie.id)
+            .order_by(
+                Movie.id,
+                cast_top_user.c.cast_avg.desc(),
+                Movie.avg_rating.desc()
+            )
+            .limit(limit)
+        )
+
+        return q.all()
 
     def recalculate_rating(self, movie_id: int) -> Optional[Movie]:
         """Recalculate and persist vote count and average (and popularity) for a movie.
