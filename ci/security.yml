@@ -1,6 +1,6 @@
 #https://github.com/aquasecurity/trivy/blob/main/contrib/Trivy.gitlab-ci.yml
 Trivy_container_scanning:
-  stage: test
+  stage: security
   image:
     name: alpine:3.20
   parallel:
