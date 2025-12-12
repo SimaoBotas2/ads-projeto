@@ -14,19 +14,16 @@ trivy_scan:
   script:
     - echo "Scanning image - $IMAGE_NAME"
     - mkdir -p security_reports
-    - IMAGE="$CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest"
     - trivy image --severity CRITICAL,HIGH \
         --cache-dir .trivycache/ \
         --no-progress \
         --format json \
-        -o security_reports/${IMAGE_NAME}.json \
-        "$IMAGE" || true
+        -o security_reports/${CI_JOB_NAME}_${IMAGE_NAME}.json \
+        $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest || true
   cache:
     paths:
       - .trivycache/
   artifacts:
-    reports:
-      container_scanning: security_reports/${IMAGE_NAME}.json
     paths:
       - security_reports/
     when: always
