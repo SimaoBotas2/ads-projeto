@@ -1,6 +1,8 @@
 container_scanning:
   stage: security
-  image: docker.io/aquasec/trivy:latest
+  image:
+    name: docker.io/aquasec/trivy:latest
+    entrypoint: [""] # Required to allow shell script execution in GitLab CI
   parallel:
     matrix:
       - IMAGE_NAME: api
@@ -12,26 +14,19 @@ container_scanning:
     TRIVY_AUTH_URL: "$CI_REGISTRY"
     TRIVY_NO_PROGRESS: "true"
     TRIVY_CACHE_DIR: ".trivycache/"
+    # Constructs the full image name dynamically based on the matrix
     FULL_IMAGE_NAME: $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest
   script:
-    # Check Trivy version
     - trivy --version
-
-    # Login to the registry (optional but required for private images)
-    - trivy registry login --username "$TRIVY_USERNAME" --password "$TRIVY_PASSWORD" "$TRIVY_AUTH_URL"
-
-    # Update the vulnerability database
-    - trivy image --download-db-only
-
-    # Generate a GitLab-specific JSON report
-    - trivy image --exit-code 0 --format template --template "@/contrib/gitlab.tpl" \
-        --output "$CI_PROJECT_DIR/gl-container-scanning-${IMAGE_NAME}.json" "$FULL_IMAGE_NAME"
-
-    # Display the full report in the console
-    - trivy image --exit-code 0 "$FULL_IMAGE_NAME"
-
-    # Fail the job only if CRITICAL vulnerabilities are found
-    - trivy image --exit-code 1 --severity CRITICAL "$FULL_IMAGE_NAME"
+    # Update vulnerabilities db
+    - time trivy image --download-db-only
+    # Generate GitLab-specific JSON report
+    # Output is saved with a dynamic name to avoid conflicts in artifacts
+    - time trivy image --exit-code 0 --format template --template "@/contrib/gitlab.tpl" --output "$CI_PROJECT_DIR/gl-container-scanning-${IMAGE_NAME}.json" "$FULL_IMAGE_NAME"
+    # Print full report to console for quick debugging
+    - time trivy image --exit-code 0 "$FULL_IMAGE_NAME"
+    # Fail on critical vulnerabilities
+    - time trivy image --exit-code 1 --severity CRITICAL "$FULL_IMAGE_NAME"
   cache:
     paths:
       - .trivycache/
