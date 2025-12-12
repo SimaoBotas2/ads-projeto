@@ -1,35 +1,32 @@
 trivy_scan:
   image: alpine:3.20
   stage: security
+  parallel:
+    matrix:
+      - IMAGE_NAME: api
+      - IMAGE_NAME: web
   variables:
     TRIVY_VERSION: "0.58.0"
-
   before_script:
-    # Install curl and docker CLI, required for registry login and image scanning
     - apk add --no-cache curl docker-cli
-
-    # Install Trivy in the container, version is controlled by TRIVY_VERSION
     - curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v${TRIVY_VERSION}
-
-    # Authenticate Trivy against the GitLab container registry, required for pulling private images
     - trivy registry login --username "$CI_REGISTRY_USER" --password "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-
   script:
     - echo "Scanning image - $IMAGE_NAME"
-
-    # Create directory for the security reports if it does not exist
     - mkdir -p security_reports
-
-    # Run Trivy image scan, generate a JSON report, never fail the job even when vulnerabilities exist
+    - IMAGE="$CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest"
     - trivy image --severity CRITICAL,HIGH \
         --cache-dir .trivycache/ \
         --no-progress \
         --format json \
         -o security_reports/${IMAGE_NAME}.json \
-        $CI_REGISTRY_IMAGE/${IMAGE_NAME}:latest || true
-
+        "$IMAGE" || true
+  cache:
+    paths:
+      - .trivycache/
   artifacts:
-    # Upload generated reports as artifacts for later inspection
+    reports:
+      container_scanning: security_reports/${IMAGE_NAME}.json
     paths:
       - security_reports/
     when: always
