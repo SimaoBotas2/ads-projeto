@@ -12,6 +12,7 @@ workflow:
 stages:
   - static_analysis
   - unit_test
+  - security
   - build
   - documentation
   - deploy
@@ -19,6 +20,7 @@ stages:
 include:
   - local: '/ci/static_analysis.yml'
   - local: '/ci/unit_test.yml'
+  - local: '/ci/security.yml'
   - local: '/ci/build.yml'
   - local: '/ci/documentation.yml'
   - local: '/ci/deploy.yml'
