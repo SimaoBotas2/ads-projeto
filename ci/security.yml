@@ -1,5 +1,6 @@
 container_scanning:
   image: docker.io/aquasec/trivy:latest
+  stage: security
   parallel:
     matrix:
       - IMAGE_NAME: api
