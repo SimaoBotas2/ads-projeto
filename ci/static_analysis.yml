@@ -26,3 +26,4 @@ static_analysis_web_prettier:
     paths:
       - src/web/prettier-report.txt
     expire_in: 1 week
+  dependencies: []

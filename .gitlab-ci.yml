@@ -24,8 +24,3 @@ include:
   - local: '/ci/security.yml'
   - local: '/ci/documentation.yml'
   - local: '/ci/deploy.yml'
-
-cache:
-  key: ${CI_PROJECT_ID}-pip
-  paths:
-    - .cache/pip/
