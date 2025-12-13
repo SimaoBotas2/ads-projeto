@@ -14,11 +14,25 @@ deploy:
     - echo "CORS_ORIGINS=$CORS_ORIGINS"
     - cd ci
     - docker compose -f docker-compose.yml -p traditional down
-    - docker compose -f docker-compose.yml -p traditional up -d --build
+    - docker compose -f docker-compose.yml -p traditional pull
+    - docker compose -f docker-compose.yml -p traditional up -d
+    - sleep 15
+    - |
+      for i in {1..15}; do
+        curl -f -s "http://$PUBLIC_IP:5005/docs" > /dev/null 2>&1 && break
+        [ $i -eq 15 ] && echo "ERROR: API not responding" && docker compose -f docker-compose.yml -p traditional logs api && exit 1
+        sleep 2
+      done
+    - |
+      for i in {1..15}; do
+        curl -f -s "http://$PUBLIC_IP:80" > /dev/null 2>&1 && break
+        [ $i -eq 10 ] && echo "ERROR: Web not responding" && docker compose -f docker-compose.yml -p traditional logs web && exit 1
+        sleep 2
+      done
     - echo "Deployment completed successfully."
     - echo "Deployed services:"
-    - docker ps
-    - echo "You can access the web application at http://$PUBLIC_IP"
+    - docker compose -f docker-compose.yml -p traditional ps
+    - echo "You can access the web application at http://$PUBLIC_IP:80"
     - echo "You can access the API at http://$PUBLIC_IP:5005"
   tags:
     - shell

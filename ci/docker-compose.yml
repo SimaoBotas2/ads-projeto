@@ -28,8 +28,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    volumes:
-      - ./src/api/app:/app/app
   web:
     image: registry.gitlab.com/botassimao/ads-projeto/web:latest
     pull_policy: always
