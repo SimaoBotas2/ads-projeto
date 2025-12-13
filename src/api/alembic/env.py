@@ -5,8 +5,8 @@ from alembic import context
 
 # Ensure src/api is in sys.path for Alembic imports
 import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from os.path import abspath, dirname
+sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
 from app.database import Base
 from app.models import User, Movie, Genre, Director, Cast, Rating
