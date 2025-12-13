@@ -29,8 +29,34 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      api-db-init:
+        condition: service_completed_successfully
     volumes:
-      - ./src/api/app:/app/app
+      - ./src/api:/app
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5005/docs || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  api-db-init:
+    build:
+      context: src/api
+      dockerfile: Dockerfile
+    container_name: movie_recommendation_api_db_init
+    command: >
+      sh -c "
+        alembic upgrade head
+      "
+    environment:
+      DATABASE_URL: postgresql://user:password@postgres:5432/movie_recommendation_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./src/api:/app
+
   web:
     build:
       context: src/web
@@ -41,7 +67,8 @@ services:
     environment:
       API_URL: ${API_URL:-http://localhost:5005}
     depends_on:
-      - api
+      api:
+        condition: service_healthy
 
 volumes:
   postgres_data:
