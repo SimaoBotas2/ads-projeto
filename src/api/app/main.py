@@ -6,6 +6,7 @@ from .routers import (
     users_router,
     ratings_router,
     recommendations_router,
+    genres_router,
 )
 
 # Database schema is managed by Alembic migrations.
@@ -31,6 +32,7 @@ app.include_router(movies_router)
 app.include_router(users_router)
 app.include_router(ratings_router)
 app.include_router(recommendations_router)
+app.include_router(genres_router)
 
 
 @app.get("/", tags=["root"])
