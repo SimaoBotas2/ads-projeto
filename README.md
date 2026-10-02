@@ -4,9 +4,7 @@
 
 Full-stack movie recommendation web application: users browse and search movies, rate them, and get recommendations based on the genres, directors and cast of the movies they rated highly.
 
-University project for the *Análise e Desenho de Software* course, Computer Engineering (LEI), University of Coimbra. <!-- TODO: confirm the course name (ADS) -->
-
-<!-- TODO: add screenshots to docs/screenshots/ (home page, recommendations, movie detail) and reference them here -->
+University project for the *Análise e Desenho de Software* course, Computer Engineering (LEI), University of Coimbra.
 
 ## Features
 
@@ -39,8 +37,6 @@ All three recommenders exclude movies the user has already rated:
 - **By genre:** takes the user's top 5 genres by average rating given, then orders unseen movies by that genre average and by the movie's own average rating
 - **By director:** unseen movies from the directors of movies the user rated, ordered by average rating
 - **By cast:** unseen movies with cast members from movies the user rated, ordered by average rating
-
-<!-- TODO: describe the reasoning behind this approach (why content-based, limitations, alternatives considered) -->
 
 ## Tech Stack
 
@@ -122,10 +118,6 @@ The original pipeline runs on GitLab CI (`.gitlab-ci.yml` and `ci/`) with these 
 
 On GitHub, `.github/workflows/ci.yml` runs the backend tests and the frontend lint and build.
 
-<!-- TODO: add the link to the deployed app, if it is still online -->
-
 ## Authors
-
-<!-- TODO: add the team members -->
 
 University of Coimbra · Computer Engineering · 2025
