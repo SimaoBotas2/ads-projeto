@@ -4,7 +4,7 @@
 
 Full-stack movie recommendation web application: users browse and search movies, rate them, and get recommendations based on the genres, directors and cast of the movies they rated highly.
 
-University project for the *Análise e Desenho de Software* course, Computer Engineering (LEI), University of Coimbra.
+University project for the *Análise e Desenho de Software* course, MSc in Software Engineering (MEI), University of Coimbra.
 
 ## Features
 
@@ -120,4 +120,4 @@ On GitHub, `.github/workflows/ci.yml` runs the backend tests and the frontend li
 
 ## Authors
 
-University of Coimbra · Computer Engineering · 2025
+University of Coimbra · MSc in Software Engineering · 2025
